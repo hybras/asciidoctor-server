@@ -1,8 +1,20 @@
-[package]
-name = "asciidoctor-batch"
+[workspace]
+members = [
+    "client",
+    "server",
+]
+resolver = "2"
+
+[workspace.package]
+authors = ["hybras"]
+description = "A kludge to improve the performance of static site generators that use asciidoc through its cli"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/hybras/asciidoctor-batch"
+documentation = "https://github.com/hybras/asciidoctor-batch"
+homepage = "https://github.com/hybras/asciidoctor-batch"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
+[workspace.dependencies]
+
