@@ -27,6 +27,8 @@
           ];
 
           shellHook = ''
+              # For rust-analyzer 'hover' tooltips to work.
+              export RUST_SRC_PATH=${pkgs.rust-bin.stable.latest.rust-std}
           '';
         };
       }
