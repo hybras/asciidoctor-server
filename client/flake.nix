@@ -20,10 +20,6 @@
           buildInputs = [
             pkgs.rust-bin.stable.latest.default
             pkgs.rust-bin.stable.latest."rust-analyzer"
-            # unclear why the following doesn't work
-            # pkgs.rust-bin.stable.latest.default.override {
-              # extensions = [ "rust-analyzer" ];
-            # }
           ];
 
           shellHook = ''
