@@ -10,13 +10,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "asciidoctor-batch-server"
-version = "0.1.0"
-dependencies = [
- "zmq",
-]
-
-[[package]]
 name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
