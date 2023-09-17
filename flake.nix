@@ -20,6 +20,9 @@
           buildInputs = [
             pkgs.rust-bin.stable.latest.default
             pkgs.rust-bin.stable.latest."rust-analyzer"
+            pkgs.ruby
+            pkgs.rubyPackages.solargraph
+            pkgs.protobuf
           ];
 
           shellHook = ''
