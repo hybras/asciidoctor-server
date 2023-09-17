@@ -2,9 +2,9 @@
   description = "A devShell example";
 
   inputs = {
-    nixpkgs.url      = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     rust-overlay.url = "github:oxalica/rust-overlay";
-    flake-utils.url  = "github:numtide/flake-utils";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, nixpkgs, rust-overlay, flake-utils, ... }:
@@ -18,17 +18,14 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = [
-            pkgs.rust-bin.stable.latest.default
-            pkgs.rust-bin.stable.latest."rust-analyzer"
+            (pkgs.rust-bin.stable.latest.default.override
+            {
+              extensions = [ "rust-src" "rust-analyzer" ];
+            })
             pkgs.ruby
             pkgs.rubyPackages.solargraph
             pkgs.protobuf
           ];
-
-          shellHook = ''
-              # For rust-analyzer 'hover' tooltips to work.
-              export RUST_SRC_PATH=${pkgs.rust-bin.stable.latest.rust-std}
-          '';
         };
       }
     );
