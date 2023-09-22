@@ -26,6 +26,11 @@
             pkgs.rubyPackages.solargraph
             pkgs.protobuf
           ];
+          shellHook=''
+            export DYLD_LIBRARY_PATH="${pkgs.ruby}/lib"
+            export LD_LIBRARY_PATH="${pkgs.ruby}/lib"
+            export ROSY_RUBY="${pkgs.ruby}/bin"
+          '';
         };
       }
     );
