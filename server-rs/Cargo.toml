@@ -9,7 +9,7 @@ edition = "2021"
 magnus = { version = "0.6.2", features = ["embed"] }
 anyhow = "1.0.75"
 lazy_static = "1.4.0"
-rusty-fork = "0.3.0"
+rusty-fork = { version = "0.3.0", features = ["macro"] }
 
 [patch.crates-io]
-rusty-fork = { git = "https://github.com/daxpedda/rusty-fork", branch = "return-feature" }
+rusty-fork = { git = "https://github.com/daxpedda/rusty-fork", branch = "proc-macro-feature" }

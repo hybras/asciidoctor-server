@@ -34,7 +34,7 @@ dependencies = [
  "regex",
  "rustc-hash",
  "shlex",
- "syn",
+ "syn 2.0.37",
 ]
 
 [[package]]
@@ -177,7 +177,7 @@ checksum = "5968c820e2960565f647819f5928a42d6e874551cab9d88d75e3e0660d7f71e3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn",
+ "syn 2.0.37",
 ]
 
 [[package]]
@@ -253,7 +253,7 @@ dependencies = [
  "quote",
  "regex",
  "shell-words",
- "syn",
+ "syn 2.0.37",
 ]
 
 [[package]]
@@ -322,12 +322,22 @@ dependencies = [
 [[package]]
 name = "rusty-fork"
 version = "0.3.0"
-source = "git+https://github.com/daxpedda/rusty-fork?branch=return-feature#84cb492c2e39f57022e64172d0a97c4305a0c242"
+source = "git+https://github.com/daxpedda/rusty-fork?branch=proc-macro-feature#a5b7d7b4578881788f8d5a86f8ffa268309b42e1"
 dependencies = [
  "fnv",
  "quick-error",
+ "rusty-fork-macro",
  "tempfile",
  "wait-timeout",
+]
+
+[[package]]
+name = "rusty-fork-macro"
+version = "0.1.0"
+source = "git+https://github.com/daxpedda/rusty-fork?branch=proc-macro-feature#a5b7d7b4578881788f8d5a86f8ffa268309b42e1"
+dependencies = [
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]
@@ -357,6 +367,17 @@ name = "shlex"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7cee0529a6d40f580e7a5e6c495c8fbfe21b7b52795ed4bb5e62cdf92bc6380"
+
+[[package]]
+name = "syn"
+version = "1.0.109"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-ident",
+]
 
 [[package]]
 name = "syn"
