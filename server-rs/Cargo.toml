@@ -1,15 +1,20 @@
 [package]
-name = "server-rs"
-version = "0.1.0"
-edition = "2021"
+name = "asciidoctor-server"
+version.workspace = true
+authors.workspace = true
+description.workspace = true
+documentation.workspace = true
+repository.workspace = true
+edition.workspace = true
+homepage.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 magnus = { version = "0.6.2", features = ["embed"] }
-anyhow = "1.0.75"
-lazy_static = "1.4.0"
 rusty-fork = { version = "0.3.0", features = ["macro"] }
-
-[patch.crates-io]
-rusty-fork = { git = "https://github.com/daxpedda/rusty-fork", branch = "proc-macro-feature" }
+zmq.workspace = true
+futures.workspace = true
+tarpc.workspace = true
+tokio.workspace = true
+anyhow.workspace = true
