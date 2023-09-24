@@ -28,6 +28,7 @@
             pkgs.rubyPackages.solargraph
             pkgs.protobuf
             pkgs.rosie
+            pkgs.go
           ];
           shellHook=''
             export DYLD_LIBRARY_PATH="${pkgs.ruby}/lib"
