@@ -72,28 +72,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
-        "ruby-nix": "ruby-nix",
         "rust-overlay": "rust-overlay"
-      }
-    },
-    "ruby-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1688825976,
-        "narHash": "sha256-7EvZu+/+uNZ0kfSgQQIrRGg8RXcUN9UgRsobjbxEdBQ=",
-        "owner": "inscapist",
-        "repo": "ruby-nix",
-        "rev": "911d5e8584453e1aff0fb85c93aa163dcdd0f3f0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "inscapist",
-        "repo": "ruby-nix",
-        "type": "github"
       }
     },
     "rust-overlay": {

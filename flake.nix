@@ -5,25 +5,32 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     rust-overlay.url = "github:oxalica/rust-overlay";
     flake-utils.url = "github:numtide/flake-utils";
-    ruby-nix.url = "github:inscapist/ruby-nix";
-    ruby-nix.inputs.nixpkgs.follows = "nixpkgs";
+    # ruby-nix.url = "github:inscapist/ruby-nix";
+    # ruby-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, rust-overlay, ruby-nix, flake-utils, ... }:
+  outputs = { self, nixpkgs, rust-overlay, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ 
-          (import rust-overlay) 
-          ruby-nix.overlays.ruby ];
+          (import rust-overlay)
+          ];
         pkgs = import nixpkgs {
           inherit system overlays;
         };
-        rubyNix = ruby-nix.lib pkgs;
-        inherit (rubyNix {
+        # rubyNix = ruby-nix.lib pkgs;
+        # inherit (rubyNix {
+        #   name = "asciidoctor-server";
+        #   gemset = ./server-rb/gemset.nix;
+        # })
+        #   env ruby;
+        gems = pkgs.bundlerEnv {
           name = "asciidoctor-server";
-          gemset = ./server-rb/gemset.nix;
-        })
-          env ruby;
+          ruby = pkgs.ruby;
+          gemfile = ./Gemfile;
+          lockfile = ./Gemfile.lock;
+          gemset = ./gemset.nix;
+        };
       in
       {
         devShells.default = pkgs.mkShell {
@@ -32,9 +39,8 @@
             {
               extensions = [ "rust-src" "rust-analyzer" ];
             })
-            # pkgs.ruby
-            ruby
-            env
+            gems.wrappedRuby
+            gems
             pkgs.rubyPackages.solargraph
             pkgs.protobuf
             pkgs.rosie
