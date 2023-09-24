@@ -29,6 +29,8 @@
             pkgs.protobuf
             pkgs.rosie
             pkgs.go
+            pkgs.delve
+            pkgs.go-tools
           ];
           shellHook=''
             export DYLD_LIBRARY_PATH="${pkgs.ruby}/lib"
