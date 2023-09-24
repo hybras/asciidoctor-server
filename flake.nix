@@ -19,18 +19,22 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          buildInputs = [
+          buildInputs =
+          [ pkgs.ruby
+            pkgs.rubyPackages.solargraph
+            ] ++[
             (pkgs.rust-bin.stable.latest.default.override
             {
               extensions = [ "rust-src" "rust-analyzer" ];
             })
-            pkgs.ruby
-            pkgs.rubyPackages.solargraph
             pkgs.protobuf
             pkgs.rosie
+          ] ++ [
             pkgs.go
             pkgs.delve
             pkgs.go-tools
+            pkgs.go-outline
+            pkgs.gopls
           ];
           shellHook=''
             export DYLD_LIBRARY_PATH="${pkgs.ruby}/lib"
