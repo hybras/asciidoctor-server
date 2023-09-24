@@ -18,12 +18,6 @@
         pkgs = import nixpkgs {
           inherit system overlays;
         };
-        # rubyNix = ruby-nix.lib pkgs;
-        # inherit (rubyNix {
-        #   name = "asciidoctor-server";
-        #   gemset = ./server-rb/gemset.nix;
-        # })
-        #   env ruby;
         gems = (pkgs.bundlerEnv {
           name = "asciidoctor-server";
           ruby = pkgs.ruby;
@@ -39,8 +33,7 @@
             {
               extensions = [ "rust-src" "rust-analyzer" ];
             })
-            # gems.wrappedRuby
-            # gems
+            pkgs.bundix
             pkgs.ruby
             pkgs.rubyPackages.solargraph
             pkgs.protobuf
