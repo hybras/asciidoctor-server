@@ -210,6 +210,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "comms"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "tarpc",
+ "zmq",
+]
+
+[[package]]
 name = "crossbeam"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
