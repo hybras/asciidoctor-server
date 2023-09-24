@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package asciidoctor;
+
+message Request {
+    repeated string extensions = 0;
+    string backend = 0;
+    repeated string attributes = 0;
+    string input = 0;
+}
+
+message Reply {
+    string output = 1;
+}
+
+service AsciidoctorConverter {
+
+}
