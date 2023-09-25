@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "client",
+    "client-rs",
     "server-rs",
     "comms"
 ]
