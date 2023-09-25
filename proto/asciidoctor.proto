@@ -1,12 +1,14 @@
 syntax = "proto3";
 
+option go_package = "io.github.hybras/asciidoctor-server/grpc";
+
 package asciidoctor;
 
 message Request {
-    repeated string extensions = 0;
-    string backend = 0;
-    repeated string attributes = 0;
-    string input = 0;
+    repeated string extensions = 3;
+    string backend = 4;
+    repeated string attributes = 2;
+    string input = 1;
 }
 
 message Reply {
@@ -14,5 +16,5 @@ message Reply {
 }
 
 service AsciidoctorConverter {
-
-}
+    rpc Convert(Request) returns (Reply) {}
+ }
