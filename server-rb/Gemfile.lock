@@ -3,6 +3,7 @@ PATH
   specs:
     asciidoctor_server (0.1.0)
       asciidoctor (~> 2.0)
+      grpc (~> 1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -10,6 +11,22 @@ GEM
     asciidoctor (2.0.20)
     ast (2.4.2)
     base64 (0.1.1)
+    google-protobuf (3.24.3)
+    google-protobuf (3.24.3-arm64-darwin)
+    google-protobuf (3.24.3-x86_64-darwin)
+    google-protobuf (3.24.3-x86_64-linux)
+    googleapis-common-protos-types (1.9.0)
+      google-protobuf (~> 3.18)
+    grpc (1.58.0)
+      google-protobuf (~> 3.23)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.58.0-x86_64-darwin)
+      google-protobuf (~> 3.23)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.58.0-x86_64-linux)
+      google-protobuf (~> 3.23)
+      googleapis-common-protos-types (~> 1.0)
+    grpc-tools (1.58.0)
     json (2.6.3)
     language_server-protocol (3.17.0.3)
     minitest (5.20.0)
@@ -40,17 +57,18 @@ GEM
     unicode-display_width (2.4.2)
 
 PLATFORMS
-  arm64-linux
   arm64-darwin
+  arm64-linux
   ruby
   x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
   asciidoctor_server!
+  grpc-tools (~> 1.0)
   minitest (~> 5.0)
   rake (~> 13.0)
   rubocop (~> 1.21)
 
 BUNDLED WITH
-   2.4.13
+   2.3.26
