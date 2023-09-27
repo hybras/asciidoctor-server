@@ -23,7 +23,7 @@ end
 
 def main
   s = GRPC::RpcServer.new
-  s.add_http2_port('0.0.0.0:50051', :this_port_is_insecure)
+  s.add_http2_port('unix:///Users/hybras/Documents/asciidoctor-server/socket.sock', :this_port_is_insecure)
   s.handle(Asciidoctor::Server::AsciidoctorServer)
   # Runs the server with SIGHUP, SIGINT and SIGTERM signal handlers to
   #   gracefully shutdown.
