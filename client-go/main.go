@@ -30,6 +30,7 @@ func main() {
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
+	r, err := c.Convert(ctx, &pb.AsciidoctorConvertRequest{
 		Extensions: []string{},
 		Backend:    "html5",
 		Attributes: []string{},
