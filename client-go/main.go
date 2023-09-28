@@ -13,14 +13,18 @@ import (
 )
 
 // var (
-// 	addr = flag.String("addr", "unix://.asciidoctor-server", "the address to connect to")
-// 	backend = flag.String("backend", "html5", "backend")
+//
+//	addr = flag.String("addr", "unix://.asciidoctor-server", "the address to connect to")
+//	backend = flag.String("backend", "html5", "backend")
+//
 // )
+// const ADDR = "unix:///Users/hybras/Documents/asciidoctor-server/socket.sock";
+const ADDR = "localhost:50051"
 
 func main() {
 	// flag.Parse()
 	// Set up a connection to the server.
-	conn, err := grpc.Dial("unix:///Users/hybras/Documents/asciidoctor-server/socket.sock", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(ADDR, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -31,9 +35,9 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.Convert(ctx, &pb.AsciidoctorConvertRequest{
-		Extensions: []string{},
-		Backend:    "html5",
-		Attributes: []string{},
+		// Extensions: []string{},
+		Backend: "html5",
+		// Attributes: []string{},
 		Input: "\n" +
 			"= Asciidoctor Hello\n" +
 			"\n" +
