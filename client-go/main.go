@@ -3,13 +3,18 @@ package main
 
 import (
 	"context"
+	"io"
+	"os"
+
+	"github.com/spf13/cobra"
+
 	// "flag"
 	"log"
 	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	pb "io.github.hybras/asciidoctor-server/proto"
+	pb "github.com/hybras/asciidoctor-server/proto"
 )
 
 // var (
@@ -22,6 +27,13 @@ import (
 const ADDR = "localhost:50051"
 
 func main() {
+	stdin, err := io.ReadAll(os.Stdin)
+
+	if err != nil {
+		log.Fatalf("Could not read stdin: %v", err)
+	}
+	input := string(stdin)
+
 	// flag.Parse()
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(ADDR, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -38,10 +50,7 @@ func main() {
 		Extensions: []string{},
 		Backend: "html5",
 		Attributes: []string{},
-		Input: "\n" +
-			"= Asciidoctor Hello\n" +
-			"\n" +
-			"Paragraph\n",
+		Input: input,
 	})
 	if err != nil {
 		log.Fatalf("could not convert: %v", err)

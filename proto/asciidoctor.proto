@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "io.github.hybras/asciidoctor-server/proto";
+option go_package = "com.github/hybras/asciidoctor-server/proto";
 option ruby_package = "Asciidoctor::Server";
 
 package asciidoctor;
