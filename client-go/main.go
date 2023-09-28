@@ -35,9 +35,9 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.Convert(ctx, &pb.AsciidoctorConvertRequest{
-		// Extensions: []string{},
+		Extensions: []string{},
 		Backend: "html5",
-		// Attributes: []string{},
+		Attributes: []string{},
 		Input: "\n" +
 			"= Asciidoctor Hello\n" +
 			"\n" +
