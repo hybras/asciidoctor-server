@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.12
-// source: asciidoctor.proto
+// source: proto/asciidoctor.proto
 
 package proto
 
@@ -101,5 +101,5 @@ var AsciidoctorConverter_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "asciidoctor.proto",
+	Metadata: "proto/asciidoctor.proto",
 }
