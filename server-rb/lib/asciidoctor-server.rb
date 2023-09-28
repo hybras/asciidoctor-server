@@ -11,19 +11,23 @@ module Asciidoctor
         # convert_req.extensions.each do |extension|
         #   require extension
         # end
+        puts convert_req
         doc = Asciidoctor.convert(
           convert_req.input,
-          backend: convert_req.backend,
-          attributes: convert_req.attributes,)
-        ::Asciidoctor::Server::Reply.new(output: doc)
+          # backend: convert_req.backend,
+          # attributes: convert_req.attributes,
+          )
+        ::Asciidoctor::Server::AsciidoctorConvertReply.new(output: doc)
       end
     end
   end
 end
 
 def main
+  # addr = 'unix:///Users/hybras/Documents/asciidoctor-server/socket.sock'
+  addr = "localhost:50051"
   s = GRPC::RpcServer.new
-  s.add_http2_port('unix:///Users/hybras/Documents/asciidoctor-server/socket.sock', :this_port_is_insecure)
+  s.add_http2_port(addr, :this_port_is_insecure)
   s.handle(Asciidoctor::Server::AsciidoctorServer)
   # Runs the server with SIGHUP, SIGINT and SIGTERM signal handlers to
   #   gracefully shutdown.
