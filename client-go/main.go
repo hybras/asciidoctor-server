@@ -28,7 +28,7 @@ func main() {
 	addr := parser.String("addr", "address", &argparse.Option{
 		Required: true,
 	})
-	// attributes := parser.Strings("a", "attribute", nil)
+	attributes := parser.Strings("a", "attribute", nil)
 	inputs := parser.Strings("", "files", &argparse.Option{
 		Positional: true,
 		Required:   true,
@@ -66,7 +66,7 @@ func main() {
 	r, err := c.Convert(ctx, &pb.AsciidoctorConvertRequest{
 		Extensions: []string{},
 		Backend:    *backend,
-		Attributes: []string{},
+		Attributes: *attributes,
 		Input:      input,
 	})
 	if err != nil {
