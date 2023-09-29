@@ -29,6 +29,7 @@ func main() {
 		Required: true,
 	})
 	attributes := parser.Strings("a", "attribute", nil)
+	extensions := parser.Strings("r", "require", nil)
 	inputs := parser.Strings("", "files", &argparse.Option{
 		Positional: true,
 		Required:   true,
@@ -64,7 +65,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := c.Convert(ctx, &pb.AsciidoctorConvertRequest{
-		Extensions: []string{},
+		Extensions: *extensions,
 		Backend:    *backend,
 		Attributes: *attributes,
 		Input:      input,
