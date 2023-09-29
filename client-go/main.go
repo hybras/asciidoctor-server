@@ -22,9 +22,9 @@ const ADDR = "localhost:50051"
 
 func main() {
 	parser := argparse.NewParser("", "", nil)
-	// backend := parser.String("b", "backend", &argparse.Option{
-	// 	Default: "html5",
-	// })
+	backend := parser.String("b", "backend", &argparse.Option{
+		Default: "html5",
+	})
 	addr := parser.String("addr", "address", &argparse.Option{
 		Required: true,
 	})
@@ -65,7 +65,7 @@ func main() {
 	defer cancel()
 	r, err := c.Convert(ctx, &pb.AsciidoctorConvertRequest{
 		Extensions: []string{},
-		Backend:    "html5",
+		Backend:    *backend,
 		Attributes: []string{},
 		Input:      input,
 	})
