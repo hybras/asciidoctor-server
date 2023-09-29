@@ -6,27 +6,45 @@ import (
 	"io"
 	"os"
 
-	"github.com/spf13/cobra"
+	"github.com/hellflame/argparse"
 
 	// "flag"
 	"log"
 	"time"
 
+	pb "github.com/hybras/asciidoctor-server/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	pb "github.com/hybras/asciidoctor-server/proto"
 )
 
-// var (
-//
-//	addr = flag.String("addr", "unix://.asciidoctor-server", "the address to connect to")
-//	backend = flag.String("backend", "html5", "backend")
-//
-// )
 // const ADDR = "unix:///Users/hybras/Documents/asciidoctor-server/socket.sock";
 const ADDR = "localhost:50051"
 
 func main() {
+	parser := argparse.NewParser("", "", nil)
+	// backend := parser.String("b", "backend", &argparse.Option{
+	// 	Default: "html5",
+	// })
+	addr := parser.String("addr", "address", &argparse.Option{
+		Required: true,
+	})
+	// attributes := parser.Strings("a", "attribute", nil)
+	inputs := parser.Strings("", "files", &argparse.Option{
+		Positional: true,
+		Required:   true,
+		// Validate: func(arg string) error {
+		// 	if arg != "-" {
+		// 		return errors.New("Only accept stdin, sorry")
+		// 	} else {
+		// 		return nil
+		// 	}
+		// },
+	})
+
+	if err := parser.Parse(nil); err != nil || len(*inputs) != 1 {
+		log.Fatalf("bad args: %v", err)
+	}
+
 	stdin, err := io.ReadAll(os.Stdin)
 
 	if err != nil {
@@ -34,9 +52,8 @@ func main() {
 	}
 	input := string(stdin)
 
-	// flag.Parse()
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(ADDR, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -48,9 +65,9 @@ func main() {
 	defer cancel()
 	r, err := c.Convert(ctx, &pb.AsciidoctorConvertRequest{
 		Extensions: []string{},
-		Backend: "html5",
+		Backend:    "html5",
 		Attributes: []string{},
-		Input: input,
+		Input:      input,
 	})
 	if err != nil {
 		log.Fatalf("could not convert: %v", err)

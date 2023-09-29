@@ -8,6 +8,7 @@ module Asciidoctor
   module Server
     class AsciidoctorServer < Asciidoctor::Server::AsciidoctorConverter::Service
       def convert(convert_req, _unused_call)
+        puts convert_req
         convert_req.extensions.each(require)
         doc = Asciidoctor.convert(
           convert_req.input,
@@ -21,8 +22,8 @@ module Asciidoctor
 end
 
 def main
-  # addr = 'unix:///Users/hybras/Documents/asciidoctor-server/socket.sock'
-  addr = "localhost:50051"
+  addr = 'unix:///Users/hybras/Documents/asciidoctor-server/socket.sock'
+  # addr = "localhost:50051"
   s = GRPC::RpcServer.new
   s.add_http2_port(addr, :this_port_is_insecure)
   s.handle(Asciidoctor::Server::AsciidoctorServer)
