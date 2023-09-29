@@ -22,8 +22,7 @@ module Asciidoctor
   module Server
     class AsciidoctorServer < Asciidoctor::Server::AsciidoctorConverter::Service
       def convert(convert_req, _unused_call)
-        puts convert_req
-        convert_req.extensions.each(require)
+        convert_req.extensions.each { |ext| require(ext) }
         doc = Asciidoctor.convert(
           convert_req.input,
           backend: convert_req.backend,
