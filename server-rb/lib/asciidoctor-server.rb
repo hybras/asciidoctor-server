@@ -3,6 +3,20 @@
 require_relative "asciidoctor-server/version"
 require_relative "asciidoctor_services_pb"
 require "asciidoctor"
+require "logger"
+require "grpc"
+
+module MyLogger
+  LOGGER = Logger.new $stderr, level: Logger::INFO
+  def logger
+    LOGGER
+  end
+end
+
+# Define a gRPC module-level logger method before grpc/logconfig.rb loads.
+module GRPC
+  extend MyLogger
+end
 
 module Asciidoctor
   module Server
