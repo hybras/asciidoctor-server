@@ -6,6 +6,7 @@ option ruby_package = "Asciidoctor::Server";
 package asciidoctor;
 
 message AsciidoctorConvertRequest {
+    bool standalone = 5;
     repeated string extensions = 3;
     string backend = 4;
     repeated string attributes = 2;

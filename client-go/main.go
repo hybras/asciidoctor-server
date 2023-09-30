@@ -31,6 +31,7 @@ func main() {
 	})
 	attributes := parser.Strings("a", "attribute", nil)
 	extensions := parser.Strings("r", "require", nil)
+	no_header_footer := parser.Flag("", "no-header-footer", nil)
 	inputs := parser.Strings("", "files", &argparse.Option{
 		Positional: true,
 		Required:   true,
@@ -44,7 +45,7 @@ func main() {
 	})
 
 	if err := parser.Parse(nil); err != nil || len(*inputs) != 1 {
-		log.Fatalf("bad args: %v", err)
+		log.Fatalf("bad args: %v\n%v", err, os.Args)
 	}
 
 	stdin, err := io.ReadAll(os.Stdin)
@@ -70,6 +71,7 @@ func main() {
 		Backend:    *backend,
 		Attributes: *attributes,
 		Input:      input,
+		Standalone: !*no_header_footer,
 	})
 	if err != nil {
 		log.Fatalf("could not convert: %v", err)

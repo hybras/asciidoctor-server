@@ -27,6 +27,7 @@ module Asciidoctor
           convert_req.input,
           backend: convert_req.backend,
           attributes: convert_req.attributes.to_a,
+          standalone: convert_req.standalone,
           )
         ::Asciidoctor::Server::AsciidoctorConvertReply.new(output: doc)
       end
