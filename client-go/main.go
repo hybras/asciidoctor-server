@@ -44,7 +44,7 @@ func main() {
 		// },
 	})
 
-	if err := parser.Parse(nil); err != nil || len(*inputs) != 1 {
+	if err := parser.Parse(nil); err != nil || len(*inputs) != 1 || (*inputs)[0] != "-" {
 		log.Fatalf("bad args: %v\n%v", err, os.Args)
 	}
 
