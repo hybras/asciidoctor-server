@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 
@@ -73,5 +74,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not convert: %v", err)
 	}
-	log.Printf("Output:\n%s", r.GetOutput())
+	fmt.Print(r.GetOutput())
 }
