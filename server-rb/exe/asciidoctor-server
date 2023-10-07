@@ -7,7 +7,7 @@ require "logger"
 require "grpc"
 require "optparse"
 
-module MyLogger
+module Asciidoctor::Server::Logging
   LOGGER = Logger.new $stderr, level: Logger::INFO
   def logger
     LOGGER
@@ -16,7 +16,7 @@ end
 
 # Define a gRPC module-level logger method before grpc/logconfig.rb loads.
 module GRPC
-  extend MyLogger
+  extend Asciidoctor::Server::Logging
 end
 
 def main
