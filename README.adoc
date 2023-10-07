@@ -2,6 +2,46 @@
 
 This is an attempt to have asciidoctor run as a server. This is useful for programs that use asciidoctor's cli, like static site generators (that aren't written in ruby). Spawning a ruby process for every file is https://discourse.gohugo.io/t/asciidoc-hugo-performance/10637/14[very wasteful] and squanders https://docs.asciidoctor.org/asciidoctor/latest/features/#impressive-performance-and-strong-security[asciidoctor's speed].
 
+== Installation
+
+TIP: Use https://direnv.net/[direnv] (or many similar tools) to create an environment for your website. Install the client within this environment.
+
+Make sure the client and server version agree. Check the list of git tags. We are at semver 0 and so regularly make breaking changes.
+
+=== Client
+
+`go install github.com/hybras/asciidoctor-server/client-go@v$VERSION`
+
+=== Server
+
+ Add the following to your Gemfile. Feel free to also add specific versions of asciidoctor and its extensions / optional dependencies. The server will load them on request.
+
+[source,ruby]
+----
+gem "asciidoctor-server", "$VERSION"
+----
+
+=== Shim Script
+
+ Add the following shim to your path under the name `asciidoctor`
++
+.asciidoctor
+[source,shell]
+----
+#!/bin/bash
+
+exec asciidoctor-client-go -addr $ADDRESS "$@"
+----
+
+== Usage
+
+WARNING: I haven't yet setup an easy way to stop/start the server or have the client discover the server. Also there's no security so don't use in prod.
+
+Pick an address for the server to bind to, maybe something like $PROJECT_ROOT/.asciidoctor-server.sock
+
+. Start the server with `bundle exec`, ie `bundle exec asciidoctor-server -addr $ADDRESS`. You'll probably need to use job control or a separate shell to have this run in the background.
+. Build your website (that's `hugo` for me). If your shim was setup correctly, your static site generator will use it. You can test this by adding print statement to the shim script.
+
 == Implementation
 
 The client is written in go to minimize startup overhead, though it could have been any compiled language.
