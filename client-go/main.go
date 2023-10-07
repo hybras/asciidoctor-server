@@ -13,13 +13,10 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/hybras/asciidoctor-server/proto"
+	pb "github.com/hybras/asciidoctor-server/client-go/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
-
-// const ADDR = "unix:///Users/hybras/Documents/asciidoctor-server/socket.sock";
-const ADDR = "localhost:50051"
 
 func main() {
 	parser := argparse.NewParser("", "", nil)
