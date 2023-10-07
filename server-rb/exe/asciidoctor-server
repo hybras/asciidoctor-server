@@ -5,6 +5,7 @@ require "asciidoctor-server"
 require "asciidoctor"
 require "logger"
 require "grpc"
+require "optparse"
 
 module MyLogger
   LOGGER = Logger.new $stderr, level: Logger::INFO
@@ -19,10 +20,21 @@ module GRPC
 end
 
 def main
-  addr = 'unix:///Users/hybras/Documents/asciidoctor-server/socket.sock'
-  # addr = "localhost:50051"
-  s = GRPC::RpcServer.new
-  s.add_http2_port(addr, :this_port_is_insecure)
+  options = {
+    :threads => GRPC::RpcServer::DEFAULT_POOL_SIZE,
+    :address => "unix://#{Pathname.pwd / ".asciidoctor-server.sock"}"
+  }
+  p = OptionParser.new do |parser|
+    parser.on("-addr ADDRESS", "--address ADDRESS") do |addr|
+      options[:address] = addr
+    end
+    parser.on("-t SIZE", "--pool-size SIZE", "thread pool size") do  |size|
+      options[:threads] = size
+    end
+  end.parse
+
+  s = GRPC::RpcServer.new pool_size: options[:threads]
+  s.add_http2_port(options[:address], :this_port_is_insecure)
   s.handle(Asciidoctor::Server::AsciidoctorServer)
   # Runs the server with SIGHUP, SIGINT and SIGTERM signal handlers to
   #   gracefully shutdown.
