@@ -35,11 +35,10 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_dependency "asciidoctor", "~> 2.0"
   spec.add_dependency "grpc", "~> 1.0"
-  spec.add_dependency "optparse", "~> 0.3.1"
   spec.add_dependency "logging", "~> 1.0"
-  spec.add_development_dependency "grpc-tools", "~> 1.0"
-  spec.add_development_dependency 'asciidoctor-html5s', '~> 0.5.1'
+  spec.add_dependency "optparse", "~> 0.3.1"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
+  spec.metadata["rubygems_mfa_required"] = "true"
 end

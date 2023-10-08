@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# frozen_string_literal: true
+
 require "asciidoctor-server"
 require "asciidoctor-server/cli"
 
@@ -7,10 +9,14 @@ require "asciidoctor"
 require "logger"
 require "grpc"
 
-module Asciidoctor::Server::Logging
-  LOGGER = Logger.new $stderr, level: Logger::INFO
-  def logger
-    LOGGER
+module Asciidoctor
+  module Server
+    module Logging
+      LOGGER = Logger.new $stderr, level: Logger::INFO
+      def logger
+        LOGGER
+      end
+    end
   end
 end
 
@@ -20,14 +26,14 @@ module GRPC
 end
 
 def main
-  options = ::Asciidoctor::Server::Cli::Options.parse(ARGV)
+  options = Asciidoctor::Server::Cli::Options.parse(ARGV)
   s = GRPC::RpcServer.new pool_size: options.thread_pool_size
   s.add_http2_port(options.address, :this_port_is_insecure)
   s.handle(Asciidoctor::Server::AsciidoctorServer)
   # Runs the server with SIGHUP, SIGINT and SIGTERM signal handlers to
   #   gracefully shutdown.
   # User could also choose to run server via call to run_till_terminated
-  s.run_till_terminated_or_interrupted([1, 'int', 'SIGTERM'])
+  s.run_till_terminated_or_interrupted([1, "int", "SIGTERM"])
 end
 
 main

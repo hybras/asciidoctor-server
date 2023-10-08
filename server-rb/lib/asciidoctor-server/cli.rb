@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "grpc"
 require "optparse"
 
@@ -11,6 +13,7 @@ module Asciidoctor
             "unix://#{Pathname.pwd / ".asciidoctor-server.sock"}"
           ).parse(args)
         end
+
         def parse(args)
           positional_args = OptionParser.new do |parser|
             parser.on("-addr ADDRESS", "--address ADDRESS")
@@ -20,7 +23,7 @@ module Asciidoctor
               exit
             end
           end.parse(args, into: self)
-          return self
+          self
         end
       end
     end
