@@ -35,6 +35,8 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_dependency "asciidoctor", "~> 2.0"
   spec.add_dependency "grpc", "~> 1.0"
+  spec.add_dependency "optparse", "~> 0.3.1"
+  spec.add_dependency "logging", "~> 1.0"
   spec.add_development_dependency "grpc-tools", "~> 1.0"
   spec.add_development_dependency 'asciidoctor-html5s', '~> 0.5.1'
 
