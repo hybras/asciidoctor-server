@@ -14,7 +14,7 @@ module Asciidoctor
         def parse(args)
           positional_args = OptionParser.new do |parser|
             parser.on("-addr ADDRESS", "--address ADDRESS")
-            parser.on("-t THREAD_POOLSIZE", "--pool-size THREAD_POOLSIZE", Integer, "thread pool size")
+            parser.on("-t THREAD_POOL_SIZE", "--thread_pool_size", Integer, "thread pool size")
             parser.on("-h", "--help", "print help") do
               puts parser
               exit
