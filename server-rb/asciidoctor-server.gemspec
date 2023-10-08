@@ -3,7 +3,7 @@
 require_relative "lib/asciidoctor-server/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "asciidoctor_server"
+  spec.name = "asciidoctor-server"
   spec.version = Asciidoctor::Server::VERSION
   spec.authors = ["hybras"]
   spec.email = ["24651269+hybras@users.noreply.github.com"]
