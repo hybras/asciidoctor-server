@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "asciidoctor-server/version"
-require_relative "asciidoctor_services_pb"
+require_relative "asciidoctor-server/asciidoctor_services_pb"
 
 module Asciidoctor
   module Server

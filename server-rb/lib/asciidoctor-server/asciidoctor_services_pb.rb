@@ -2,7 +2,7 @@
 # Source: asciidoctor.proto for package 'Asciidoctor.Server'
 
 require 'grpc'
-require 'asciidoctor_pb'
+require_relative 'asciidoctor_pb'
 
 module Asciidoctor
   module Server

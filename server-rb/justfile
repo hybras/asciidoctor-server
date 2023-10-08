@@ -2,4 +2,4 @@ server:
     bundle exec ruby lib/asciidoctor-server.rb
 
 protoc-rb:
-    grpc_tools_ruby_protoc -I ../proto --ruby_out=lib --grpc_out=lib ../proto/asciidoctor.proto
+    grpc_tools_ruby_protoc -I ../proto --ruby_out=lib/asciidoctor-server --grpc_out=lib/asciidoctor-server ../proto/asciidoctor.proto
