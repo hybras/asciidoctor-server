@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    asciidoctor-server (0.2.0)
+    asciidoctor-server (0.3.0)
       asciidoctor (~> 2.0)
       grpc (~> 1.0)
       logging (~> 1.0)
@@ -16,19 +16,10 @@ GEM
       thread_safe (~> 0.3.4)
     ast (2.4.2)
     base64 (0.1.1)
-    google-protobuf (3.24.4)
     google-protobuf (3.24.4-arm64-darwin)
-    google-protobuf (3.24.4-x86_64-darwin)
-    google-protobuf (3.24.4-x86_64-linux)
     googleapis-common-protos-types (1.9.0)
       google-protobuf (~> 3.18)
     grpc (1.58.0)
-      google-protobuf (~> 3.23)
-      googleapis-common-protos-types (~> 1.0)
-    grpc (1.58.0-x86_64-darwin)
-      google-protobuf (~> 3.23)
-      googleapis-common-protos-types (~> 1.0)
-    grpc (1.58.0-x86_64-linux)
       google-protobuf (~> 3.23)
       googleapis-common-protos-types (~> 1.0)
     grpc-tools (1.58.0)
