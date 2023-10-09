@@ -9,14 +9,10 @@ require "asciidoctor"
 require "logger"
 require "grpc"
 
-module Asciidoctor
-  module Server
-    module Logging
-      LOGGER = Logger.new $stderr, level: Logger::INFO
-      def logger
-        LOGGER
-      end
-    end
+module Asciidoctor::Server::Logging
+  LOGGER = Logger.new $stderr, level: Logger::INFO
+  def logger
+    LOGGER
   end
 end
 
@@ -29,6 +25,7 @@ def main
   options = Asciidoctor::Server::Cli::Options.parse(ARGV)
   s = GRPC::RpcServer.new pool_size: options.thread_pool_size
   s.add_http2_port(options.address, :this_port_is_insecure)
+  GRPC.logger.info("... running insecurely on #{options.address}")
   s.handle(Asciidoctor::Server::AsciidoctorServer)
   # Runs the server with SIGHUP, SIGINT and SIGTERM signal handlers to
   #   gracefully shutdown.
