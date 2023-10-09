@@ -1,5 +1,7 @@
-pub mod asciidoctor {
-    include!(concat!(env!("OUT_DIR"), "/asciidoctor.rs"));
+use url::Url;
+
+pub mod grpc {
+    tonic::include_proto!("asciidoctor");
 }
 
 #[derive(argh::FromArgs, Debug)]
@@ -7,23 +9,38 @@ pub mod asciidoctor {
 pub struct Args {
     /// extensions
     #[argh(option, short = 'r')]
-    extensions: Vec<String>,
+    pub extensions: Vec<String>,
     /// backend
     #[argh(option, short = 'b', default = "\"html5\".to_string()")]
-    backend: String,
+    pub backend: String,
     /// attributes
     #[argh(option, short = 'a')]
-    attributes: Vec<String>,
+    pub attributes: Vec<String>,
+
+    /// whether the output is meant to be embedded into another document.
+    #[argh(switch, short = 's')]
+    pub no_header_footer: bool,
+
+    /// server address
+    #[argh(option, long = "address", default = "default_server_address()")]
+    pub server_address: url::Url,
 
     // from_str_fn(input_is_stdin)
     /// input (only accept stdin)
     #[argh(positional, greedy)]
-    input: String,
+    pub input: Vec<String>,
 }
 
-fn input_is_stdin(input: &str) -> Result<String, String> {
-    match input {
-        "-" => Ok(input.to_string()),
-        _ => Err("Only stdin supported".to_string()),
-    }
+fn default_server_address() -> Url {
+    Url::parse(
+        format!(
+            "unix:{}",
+            std::env::current_dir()
+                .unwrap()
+                .join("../.asciidoctor-server.sock")
+                .display()
+        )
+        .as_str(),
+    )
+    .unwrap()
 }

@@ -1,5 +1,7 @@
 use std::io::Result;
+
 fn main() -> Result<()> {
-    prost_build::compile_protos(&["src/message.proto"], &["src/"])?;
+    println!("{}", std::env::var("OUT_DIR").unwrap());
+    tonic_build::compile_protos("src/asciidoctor.proto")?;
     Ok(())
 }
