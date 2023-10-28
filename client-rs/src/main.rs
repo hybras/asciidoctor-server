@@ -1,4 +1,4 @@
-// #![cfg_attr(not(unix), allow(unused_imports))]
+#![cfg_attr(not(unix), allow(unused_imports))]
 
 #[cfg(unix)]
 use tokio::net::UnixStream;
