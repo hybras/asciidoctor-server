@@ -7,6 +7,7 @@ documentation =  "https://github.com/hybras/asciidoctor-server"
 repository = "https://github.com/hybras/asciidoctor-server"
 edition = "2021"
 homepage =  "https://github.com/hybras/asciidoctor-server"
+license = "MIT"
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
