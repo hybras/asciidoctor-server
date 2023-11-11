@@ -1,7 +1,3 @@
-#![cfg_attr(not(unix), allow(unused_imports))]
-
-#[cfg(unix)]
-use tokio::net::UnixStream;
 use tonic::transport::{Endpoint, Uri};
 use tower::service_fn;
 
@@ -11,7 +7,6 @@ use std::io::Read;
 use asciidoctor_client::grpc::asciidoctor_converter_client::AsciidoctorConverterClient;
 use asciidoctor_client::grpc::AsciidoctorConvertRequest;
 
-#[cfg(unix)]
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let Args {
@@ -22,16 +17,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         server_address,
         input: _,
     } = argh::from_env();
-    // We will ignore this uri because uds do not use it
-    // if your connector does use the uri it will be provided
-    // as the request to the `MakeConnection`.
 
     let channel = match dbg!(server_address.scheme()) {
         "unix" => {
+            #[cfg(unix)]
+            let connector = move |_: Uri| {
+                use tokio::net::UnixStream;
+                UnixStream::connect(server_address.path().to_owned())
+            };
+
+            #[cfg(windows)]
+            let connector = move |_: Uri| {
+                use tokio::net::windows::named_pipe as pipe;
+                pipe::ClientOptions::new().open(server_address.path())
+            };
+
+            // We will ignore this uri because uds do not use it
+            // if your connector does use the uri it will be provided
+            // as the request to the `MakeConnection`.
             Endpoint::try_from("http://[::]:50051")?
-                .connect_with_connector(service_fn(move |_: Uri| {
-                    UnixStream::connect(server_address.path().to_owned())
-                }))
+                .connect_with_connector(service_fn(connector))
                 .await?
         }
         _ => {
@@ -59,9 +64,4 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("{}", output);
 
     Ok(())
-}
-
-#[cfg(not(unix))]
-fn main() {
-    panic!("The `uds` example only works on unix systems!");
 }
