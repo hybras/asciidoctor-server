@@ -39,6 +39,7 @@
             pkgs.go-tools
             pkgs.go-outline
             pkgs.gopls
+            pkgs.cargo-release
           ];
           shellHook=''
             export DYLD_LIBRARY_PATH="${pkgs.ruby}/lib"
