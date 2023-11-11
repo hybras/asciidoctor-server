@@ -1,5 +1,5 @@
-server:
-    bundle exec ruby lib/asciidoctor-server.rb
+run:
+    bundle exec exe/asciidoctor-server --address unix:../.asciidoctor-server.sock
 
-protoc-rb:
+protoc:
     grpc_tools_ruby_protoc -I ../proto --ruby_out=lib/asciidoctor-server --grpc_out=lib/asciidoctor-server ../proto/asciidoctor.proto

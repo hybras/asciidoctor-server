@@ -1,0 +1,5 @@
+default:
+    @just --list
+
+run:
+    cargo run -- --address unix:../.asciidoctor-server.sock

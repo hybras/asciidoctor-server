@@ -1,6 +1,12 @@
 default:
     @just --list
 
+run-client:
+    @just client-rs/run
+
+run-server:
+    @just server/run
+
 client-go:
     go run client-go/main.go
 
