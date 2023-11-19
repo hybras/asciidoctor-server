@@ -3,7 +3,7 @@ module github.com/hybras/asciidoctor-server
 go 1.20
 
 require (
-	github.com/hellflame/argparse v1.11.0
+	github.com/hellflame/argparse v1.12.0
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
 )
