@@ -19,7 +19,7 @@ tower = "0.4"
 
 prost = "0.12"
 # Only necessary if using Protobuf well-known types:
-prost-types = "0.12.1"
+prost-types = "0.12.3"
 argh = "0.1.12"
 
 tokio = { version = "1.34", features = ["full"] }
