@@ -10,7 +10,7 @@ Make sure the client and server version agree. Check the list of git tags. We ar
 
 === Client
 
-`go install github.com/hybras/asciidoctor-server/client-go@v$VERSION`
+`cargo install asciidoctor-client`
 
 === Server
 
@@ -28,7 +28,7 @@ gem "asciidoctor-server", "$VERSION"
 === Shim Script
 
  Add the following shim to your path under the name `asciidoctor`
-+
+
 .asciidoctor
 [source,shell]
 ----
