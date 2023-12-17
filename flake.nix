@@ -41,11 +41,6 @@
             pkgs.gopls
             pkgs.cargo-release
           ];
-          shellHook=''
-            export DYLD_LIBRARY_PATH="${pkgs.ruby}/lib"
-            export LD_LIBRARY_PATH="${pkgs.ruby}/lib"
-            export ROSY_RUBY="${pkgs.ruby}"
-          '';
         };
       }
     );
