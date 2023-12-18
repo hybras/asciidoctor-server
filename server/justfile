@@ -3,3 +3,10 @@ run:
 
 protoc:
     grpc_tools_ruby_protoc -I ../proto --ruby_out=lib/asciidoctor-server --grpc_out=lib/asciidoctor-server ../proto/asciidoctor.proto
+
+build:
+    rm *.gem
+    gem build asciidoctor-server.gemspec
+
+push: build
+    gem push asciidoctor-server-*.gem
