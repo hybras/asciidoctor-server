@@ -1,1 +1,22 @@
-../../proto/asciidoctor.proto
+syntax = "proto3";
+
+option go_package = "com.github/hybras/asciidoctor-server/client-go/grpc";
+option ruby_package = "Asciidoctor::Server";
+
+package asciidoctor;
+
+message AsciidoctorConvertRequest {
+    bool standalone = 5;
+    repeated string extensions = 3;
+    string backend = 4;
+    repeated string attributes = 2;
+    string input = 1;
+}
+
+message AsciidoctorConvertReply {
+    string output = 1;
+}
+
+service AsciidoctorConverter {
+    rpc Convert(AsciidoctorConvertRequest) returns (AsciidoctorConvertReply) {}
+ }

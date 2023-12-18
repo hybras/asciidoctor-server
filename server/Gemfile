@@ -11,6 +11,6 @@ gem "minitest", "~> 5.0"
 
 gem "rubocop", "~> 1.21"
 
-gem "asciidoctor-html5s", "~> 0.5.1"
+gem "asciidoctor", "~> 2"
 
 gem "grpc-tools", "~> 1.0"
