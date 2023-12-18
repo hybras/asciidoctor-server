@@ -7,40 +7,31 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
-      };
+    };
     flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, nixpkgs, rust-overlay, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        overlays = [ 
-          (import rust-overlay)
-          ];
         pkgs = import nixpkgs {
-          inherit system overlays;
+          inherit system;
+          overlays = [ (import rust-overlay) ];
         };
       in
       {
         devShells.default = pkgs.mkShell {
           buildInputs =
-          [ pkgs.ruby
-            pkgs.rubyPackages.solargraph
-            ] ++[
-            (pkgs.rust-bin.stable.latest.default.override
-            {
-              extensions = [ "rust-src" "rust-analyzer" ];
-            })
-            pkgs.protobuf
-            pkgs.rosie
-          ] ++ [
-            pkgs.go
-            pkgs.delve
-            pkgs.go-tools
-            pkgs.go-outline
-            pkgs.gopls
-            pkgs.cargo-release
-          ];
+            [
+              pkgs.ruby
+              pkgs.rubyPackages.solargraph
+              pkgs.protobuf
+              pkgs.cargo-release
+              (pkgs.rust-bin.stable.latest.default.override
+                {
+                  extensions = [ "rust-src" "rust-analyzer" ];
+                })
+            ];
         };
       }
     );
