@@ -18,7 +18,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         input: _,
     } = argh::from_env();
 
-    let channel = match dbg!(server_address.scheme()) {
+    let channel = match server_address.scheme() {
         "unix" => {
             #[cfg(unix)]
             let connector = move |_: Uri| {
