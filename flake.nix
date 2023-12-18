@@ -21,12 +21,21 @@
           overlays = [ (import rust-overlay) ];
         };
         rust-toolchain = (pkgs.rust-bin.stable.latest.default.override
-                {
-                  extensions = [ "rust-src" "rust-analyzer" ];
-                });
+          {
+            extensions = [ "rust-src" "rust-analyzer" ];
+          });
         craneLib = (crane.mkLib pkgs).overrideToolchain rust-toolchain;
         asciidoctor-client = craneLib.buildPackage {
-          src = craneLib.cleanCargoSource (craneLib.path ./client-rs);
+          src = pkgs.lib.cleanSourceWith {
+            src = craneLib.path ./client-rs;
+            filter =
+              let
+                protoFilter = path: _type: builtins.match ".*proto$" path != null;
+                protoOrCargo = path: type:
+                  (protoFilter path type) || (craneLib.filterCargoSources path type);
+              in
+              protoOrCargo;
+          };
           strictDeps = true;
           buildInputs = [
             pkgs.protobuf
