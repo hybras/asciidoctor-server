@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/hybras/asciidoctor-server"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
-  spec.extra_rdoc_files = ["../Readme.adoc"]
+  spec.extra_rdoc_files = ["./Readme.md"]
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
