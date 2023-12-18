@@ -48,6 +48,7 @@
           buildInputs =
             [
               pkgs.ruby
+              pkgs.bundix
               pkgs.rubyPackages.solargraph
               pkgs.protobuf
               pkgs.cargo-release
