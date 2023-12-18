@@ -31,6 +31,7 @@
           buildInputs = [
             pkgs.protobuf
           ];
+          PROTOC = "${pkgs.protobuf}/bin/protoc";
         };
       in
       {
