@@ -3,6 +3,7 @@
 require_relative "lib/asciidoctor-server/version"
 
 Gem::Specification.new do |spec|
+  github_repo = "https://github.com/hybras/asciidoctor-server"
   spec.name = "asciidoctor-server"
   spec.version = Asciidoctor::Server::VERSION
   spec.authors = ["hybras"]
@@ -10,15 +11,15 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Run asciidoctor as a server"
   spec.description = "Run asciidoctor as a server and avoid the cost of spawning multiple processes"
-  spec.homepage = "https://github.com/hybras/asciidoctor-server"
+  spec.homepage = github_repo
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
   spec.extra_rdoc_files = ["./Readme.md"]
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
+  spec.metadata["homepage_uri"] = github_repo
+  spec.metadata["source_code_uri"] = github_repo
   # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
 
   # Specify which files should be added to the gem when it is released.
@@ -42,4 +43,5 @@ Gem::Specification.new do |spec|
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
   spec.metadata["rubygems_mfa_required"] = "true"
+  spec.metadata["github_repo"] = github_repo.sub("https", "ssh")
 end
