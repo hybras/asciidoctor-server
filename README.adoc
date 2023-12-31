@@ -85,7 +85,9 @@ Pick an address for the server to bind to, maybe something like $PROJECT_ROOT/.a
 
 == Implementation
 
-The two communicate in grpc, with the client mapping its cli arguments to the asciidoctor api. Only a small subset of asciidoctor's arguments are supported.
+This project was written with the constraint that hugo and asciidoctor should run unmodified.
+
+The client and server communicate using grpc, with the client mapping its cli arguments to the asciidoctor api. Only a small subset of asciidoctor's arguments are supported.
 
 Normally, hugo spawns a converter process per file. The program that is spawned corresponds to the content format. Markdown support is built into hugo, so it spawns a goroutine for markdown files.
 
@@ -117,7 +119,7 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 
 === Server
 
-Do the following under `server-rb`
+Do the following under `server`
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
@@ -130,4 +132,4 @@ Given how hacky this is, this is not a long term solution. Long term solutions i
 * an implementation of asciidoc with a shorter startup time (perhaps in a compiled language?)
 ** If a go implementation existed, it could be included in hugo. The author has expressed support for this idea given a suitable go library.
 ** Asciidoctor's startup time might improve, but this is a difficult undertaking
-* The basic principle of this (a single process / goroutine that does all conversions, and communication occurs over message passing). This is far more feasible than the other options, but would require a rearchitecture of how hugo handles external converters. It wouldn't make sense to only do this for asciidoc, unfortunately.
+* The basic principle of this (a single process / goroutine that does all conversions, and communication occurs over message passing). This is far more feasible than the other options, but would require a rearchitecture of how hugo handles external converters. It wouldn't make sense to do this solely for asciidoc, unfortunately.
