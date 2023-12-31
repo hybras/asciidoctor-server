@@ -25,8 +25,7 @@ pub struct Args {
     #[argh(option, long = "address", default = "default_server_address()")]
     pub server_address: url::Url,
 
-    // from_str_fn(input_is_stdin)
-    /// input (only accept stdin)
+    /// input (only accepts stdin). This mandatory argument should always be set to stdin, or "-". However, since argh doesn't support passing in such an argument, feel free to write whatever "filename" instead, I use "yeet". This argument will be ignored.
     #[argh(positional, greedy)]
     pub input: Vec<String>,
 }

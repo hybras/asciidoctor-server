@@ -69,7 +69,7 @@ NOTE: I hard code the address of the server, but feel free to leave it as an env
 ----
 #!/bin/bash
 
-exec asciidoctor-client --address $ADDRESS "$@"
+exec asciidoctor-client --address $ADDRESS "${@:1:$#-1}" yeet
 ----
 
 == Usage
