@@ -10,7 +10,40 @@ Make sure the client and server version agree. Check the list of git tags. We ar
 
 === Client
 
+The client is availible as a cargo package and as a nix package
+
+.Cargo
 `cargo install asciidoctor-client`
+
+.Nix
+[source,nix]
+----
+{
+  description = "A Nix Environment for running asciidoctor-client";
+
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.asciidoctor-server = {
+    url = "github:hybras/asciidoctor-server";
+    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.flake-utils.follows = "flake-utils";
+  };
+
+  outputs = { self, nixpkgs, flake-utils, asciidoctor-server }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = import nixpkgs { inherit system; }; in
+        {
+          devShells = {
+            default = pkgs.mkShell {
+              buildInputs = [
+                asciidoctor-server.packages.${system}.asciidoctor-client
+              ];
+            };
+          };
+        });
+}
+----
+
 
 === Server
 
@@ -27,14 +60,16 @@ gem "asciidoctor-server", "$VERSION"
 
 === Shim Script
 
- Add the following shim to your path under the name `asciidoctor`
+Add the following shim to your path under the name `asciidoctor`
+
+NOTE: I hard code the address of the server, but feel free to leave it as an environment variable.
 
 .asciidoctor
 [source,shell]
 ----
 #!/bin/bash
 
-exec asciidoctor-client-go -addr $ADDRESS "$@"
+exec asciidoctor-client --address $ADDRESS "$@"
 ----
 
 == Usage
