@@ -52,10 +52,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
     let mut client = AsciidoctorConverterClient::new(channel);
+
     let mut input = String::new();
     let mut stdin = std::io::stdin().lock();
     stdin.read_to_string(&mut input)?;
     drop(stdin);
+    let input = input;
 
     let request = tonic::Request::new(AsciidoctorConvertRequest {
         input,
