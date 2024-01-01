@@ -33,6 +33,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         use tokio::net::windows::named_pipe as pipe;
                         pipe::ClientOptions::new().open(server_address.path())
                     };
+                } else {
+                    compile_error!("Not windows or unix")
                 }
             );
 
