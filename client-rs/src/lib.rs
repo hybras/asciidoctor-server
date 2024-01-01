@@ -36,7 +36,7 @@ fn default_server_address() -> Url {
             "unix:{}",
             std::env::current_dir()
                 .unwrap()
-                .join("../.asciidoctor-server.sock")
+                .join(".asciidoctor-server.sock")
                 .display()
         )
         .as_str(),
