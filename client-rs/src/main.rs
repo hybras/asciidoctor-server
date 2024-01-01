@@ -1,3 +1,4 @@
+use cfg_if::cfg_if;
 use tonic::transport::{Endpoint, Uri};
 use tower::service_fn;
 
@@ -20,17 +21,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let channel = match server_address.scheme() {
         "unix" => {
-            #[cfg(unix)]
-            let connector = move |_: Uri| {
-                use tokio::net::UnixStream;
-                UnixStream::connect(server_address.path().to_owned())
-            };
-
-            #[cfg(windows)]
-            let connector = move |_: Uri| {
-                use tokio::net::windows::named_pipe as pipe;
-                pipe::ClientOptions::new().open(server_address.path())
-            };
+            let connector;
+            cfg_if!(
+                if #[cfg(unix)] {
+                    connector = move |_: Uri| {
+                        use tokio::net::UnixStream;
+                        UnixStream::connect(server_address.path().to_owned())
+                    };
+                } else if #[cfg(windows)] {
+                    connector = move |_: Uri| {
+                        use tokio::net::windows::named_pipe as pipe;
+                        pipe::ClientOptions::new().open(server_address.path())
+                    };
+                }
+            );
 
             // We will ignore this uri because uds do not use it
             // if your connector does use the uri it will be provided
