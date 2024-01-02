@@ -4,4 +4,4 @@ pub mod grpc {
 
 mod cli;
 
-use cli::Args;
+pub use cli::Args;
