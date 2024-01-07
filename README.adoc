@@ -2,6 +2,8 @@
 
 This is an attempt to have asciidoctor run as a server. This is useful for programs that use asciidoctor's cli, like static site generators (that aren't written in ruby). Spawning a ruby process for every file is https://discourse.gohugo.io/t/asciidoc-hugo-performance/10637/14[very wasteful] and squanders https://docs.asciidoctor.org/asciidoctor/latest/features/#impressive-performance-and-strong-security[asciidoctor's speed].
 
+WARNING: THIS IS ALPHA SOFTWARE, USE AT YOUR OWN RISK.
+
 == Installation
 
 TIP: Use https://direnv.net/[direnv] (or many similar tools) to create an environment for your website. Install the client within this environment.
@@ -132,4 +134,4 @@ Given how hacky this is, this is not a long term solution. Long term solutions i
 * an implementation of asciidoc with a shorter startup time (perhaps in a compiled language?)
 ** If a go implementation existed, it could be included in hugo. The author has expressed support for this idea given a suitable go library.
 ** Asciidoctor's startup time might improve, but this is a difficult undertaking
-* The basic principle of this (a single process / goroutine that does all conversions, and communication occurs over message passing). This is far more feasible than the other options, but would require a rearchitecture of how hugo handles external converters. It wouldn't make sense to do this solely for asciidoc, unfortunately.
+* The basic principle of this (a single process / goroutine that does all conversions, and communication occurs over message passing) is merged into hugo. This is far more feasible than the other options, but would require a rearchitecture of how hugo handles external converters. It wouldn't make sense to do this solely for asciidoc, unfortunately.
