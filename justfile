@@ -26,3 +26,4 @@ test:
     diff -w <(echo $s) - <<EOF
     <div class="paragraph"><p><strong>hello</strong></p></div>
     EOF
+    kill "%1"
