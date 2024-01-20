@@ -3,10 +3,10 @@ name = "asciidoctor-client"
 version = "0.4.1"
 authors = ["hybras"]
 description = "A kludge to improve the performance of static site generators that use asciidoc through its cli"
-documentation =  "https://github.com/hybras/asciidoctor-server"
+documentation = "https://github.com/hybras/asciidoctor-server"
 repository = "https://github.com/hybras/asciidoctor-server"
 edition = "2021"
-homepage =  "https://github.com/hybras/asciidoctor-server"
+homepage = "https://github.com/hybras/asciidoctor-server"
 license = "MIT"
 
 
