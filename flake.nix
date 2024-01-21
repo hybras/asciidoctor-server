@@ -47,7 +47,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs =
             [
-              pkgs.ruby
+              pkgs.ruby_3_3
               pkgs.bundix
               pkgs.rubyPackages.solargraph
               pkgs.protobuf
