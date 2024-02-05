@@ -14,7 +14,6 @@ Gem::Specification.new do |spec|
   spec.homepage = github_repo
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
-  spec.required_rubygems_version = ">= 3.3.11"
   spec.extra_rdoc_files = ["./Readme.md"]
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
@@ -27,8 +26,7 @@ Gem::Specification.new do |spec|
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   spec.files = Dir.chdir(__dir__) do
     `git ls-files -z`.split("\x0").reject do |f|
-      (File.expand_path(f) == __FILE__) ||
-        f.start_with?(*%w[bin/ test/ spec/ features/ .git .github appveyor Gemfile])
+      (f == __FILE__) || f.match(%r{\A(?:(?:bin|test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
     end
   end
   spec.bindir = "exe"
