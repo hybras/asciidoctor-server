@@ -21,7 +21,6 @@ protoc-go:
 test:
     #!/bin/bash
     just server/run &
-    sleep 1
     actual=$(echo '*hello*' | just client-rs/run)
     expected="<div class="paragraph"><p><strong>hello</strong></p></div>"
     diff -w <(echo $s) - <<< "$expected"
