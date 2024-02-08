@@ -20,9 +20,9 @@ protoc-go:
 
 test:
     #!/bin/bash
-    just run-server &
+    just server/run &
     sleep 1
-    s=$(echo '*hello*' | just run-client)
+    s=$(echo '*hello*' | just client-rs/run)
     diff -w <(echo $s) - <<EOF
     <div class="paragraph"><p><strong>hello</strong></p></div>
     EOF
