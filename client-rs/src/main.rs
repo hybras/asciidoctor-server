@@ -1,9 +1,11 @@
+use backon::{ExponentialBuilder, Retryable};
 use cfg_if::cfg_if;
 use tonic::transport::{Endpoint, Uri};
 use tower::service_fn;
 
 use asciidoctor_client::Args;
 use std::io::Read;
+use std::time::Duration;
 
 use asciidoctor_client::grpc::asciidoctor_converter_client::AsciidoctorConverterClient;
 use asciidoctor_client::grpc::AsciidoctorConvertRequest;
@@ -18,40 +20,38 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         server_address,
         input: _,
     } = argh::from_env();
+    let addy = server_address.clone();
+    let backoff = ExponentialBuilder::default()
+        .with_min_delay(Duration::from_millis(125))
+        .with_max_times(4)
+        .with_max_delay(Duration::from_secs(1))
+        .with_jitter();
+    let endpoint = Endpoint::try_from("http://[::]:50051")?;
+    let connector;
+    cfg_if!(
+        if #[cfg(unix)] {
+            connector = move |_: Uri| {
+                use tokio::net::UnixStream;
+                UnixStream::connect(addy.path().to_owned())
+            };
+        } else if #[cfg(windows)] {
+            connector = move |_: Uri| {
+                use tokio::net::windows::named_pipe as pipe;
+                pipe::ClientOptions::new().open(addy.path().to_owned())
+            };
+        } else {
+            compile_error!("Not windows or unix")
+        }
+    );
 
     let channel = match server_address.scheme() {
         "unix" => {
-            let connector;
-            cfg_if!(
-                if #[cfg(unix)] {
-                    connector = move |_: Uri| {
-                        use tokio::net::UnixStream;
-                        UnixStream::connect(server_address.path().to_owned())
-                    };
-                } else if #[cfg(windows)] {
-                    connector = move |_: Uri| {
-                        use tokio::net::windows::named_pipe as pipe;
-                        pipe::ClientOptions::new().open(server_address.path())
-                    };
-                } else {
-                    compile_error!("Not windows or unix")
-                }
-            );
-
-            // We will ignore this uri because uds do not use it
-            // if your connector does use the uri it will be provided
-            // as the request to the `MakeConnection`.
-            Endpoint::try_from("http://[::]:50051")?
-                .connect_with_connector(service_fn(connector))
+            (|| endpoint.connect_with_connector(service_fn(connector.clone())))
+                .retry(&backoff)
                 .await?
         }
-        _ => {
-            Endpoint::try_from(server_address.to_string())?
-                .connect()
-                .await?
-        }
+        _ => (|| endpoint.connect()).retry(&backoff).await?,
     };
-    let mut client = AsciidoctorConverterClient::new(channel);
 
     let mut input = String::new();
     let mut stdin = std::io::stdin().lock();
@@ -59,15 +59,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     drop(stdin);
     let input = input;
 
-    let request = tonic::Request::new(AsciidoctorConvertRequest {
+    let request = AsciidoctorConvertRequest {
         input,
         attributes,
         backend,
         extensions,
         standalone: no_header_footer,
-    });
+    };
 
-    let output = client.convert(request).await?.into_inner().output;
+    let convert = || async {
+        let mut client = AsciidoctorConverterClient::new(channel.clone());
+        client.convert(tonic::Request::new(request.clone())).await
+    };
+
+    let output = convert.retry(&backoff).await?.into_inner().output;
 
     println!("{}", output);
 
