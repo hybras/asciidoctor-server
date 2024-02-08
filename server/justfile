@@ -10,3 +10,7 @@ build:
 
 push: build
     gem push asciidoctor-server-*.gem
+
+kill:
+    #!/usr/bin/env bash
+    kill `procs --only=pid --no-header asciidoctor-server`
