@@ -22,8 +22,7 @@ test:
     #!/bin/bash
     just server/run &
     sleep 1
-    s=$(echo '*hello*' | just client-rs/run)
-    diff -w <(echo $s) - <<EOF
-    <div class="paragraph"><p><strong>hello</strong></p></div>
-    EOF
+    actual=$(echo '*hello*' | just client-rs/run)
+    expected="<div class="paragraph"><p><strong>hello</strong></p></div>"
+    diff -w <(echo $s) - <<< "$expected"
     kill "%1"
