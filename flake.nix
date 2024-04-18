@@ -30,7 +30,7 @@
             src = craneLib.path ./client-rs;
             filter =
               let
-                protoFilter = path: _type: builtins.match ".*proto$" path != null;
+                protoFilter = path: _type: builtins.match ".*/src/asciidoctor.proto$" path != null;
                 protoOrCargo = path: type:
                   (protoFilter path type) || (craneLib.filterCargoSources path type);
               in
