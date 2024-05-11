@@ -19,12 +19,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         no_header_footer,
         server_address,
         input: _,
+        max_timeout
     } = argh::from_env();
     let addy = server_address.clone();
     let backoff = ExponentialBuilder::default()
         .with_min_delay(Duration::from_millis(125))
         .with_max_times(4)
-        .with_max_delay(Duration::from_secs(1))
+        .with_max_delay(Duration::from_secs(max_timeout))
         .with_jitter();
     let endpoint = Endpoint::try_from("http://[::]:50051")?;
     let connector;

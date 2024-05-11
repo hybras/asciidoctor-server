@@ -24,6 +24,10 @@ pub struct Args {
     /// input (only accepts stdin). This mandatory argument should always be set to stdin, or "-". However, since argh doesn't support passing in such an argument, feel free to write whatever "filename" instead, I use "yeet". This argument will be ignored.
     #[argh(positional, greedy)]
     pub input: Vec<String>,
+
+    /// max timeout time for exponential backoff
+    #[argh(option, default = "2")]
+    pub max_timeout: u64
 }
 
 fn default_server_address() -> Url {
