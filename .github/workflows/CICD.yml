@@ -136,6 +136,7 @@ jobs:
         with:
           target: ${{ matrix.job.target }}
       - name: Install Rust toolchain
+        id: rust-toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.job.target }}
@@ -143,6 +144,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: client-rs
+          key: os-${{ matrix.job.os }}-target-${{ matrix.job.target }}-rust-${{ steps.rust-toolchain.outputs.toolchain }}
       - name: Build
         run: cargo build --locked --release --target=${{ matrix.job.target }}
         env:
