@@ -112,10 +112,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install protoc
+      - name: Install proto c
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update -y
           sudo apt-get install -y protobuf-compiler
+      - name: Install proto c
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install protobuf
+      - name: Install proto c
+        if: runner.os == 'Windows'
+        run: |
+          choco install protoc
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
       - name: Build binary
