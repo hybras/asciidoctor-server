@@ -119,7 +119,7 @@ jobs:
         uses: ./.github/actions/protoc
       - name: Try to cross w/o cross
         uses: ./.github/actions/manual-cross-prereqs
-        if: ${{ ! matrix.job.use-cross }}
+        if: ${{ ! matrix.job.use-cross && runner.os == 'Linux' }}
         with:
           target: ${{ matrix.job.target }}
       - name: Install Rust toolchain
