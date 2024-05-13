@@ -1,6 +1,7 @@
 name: Publish CI artifacts
 
 # rust build jobs based off of [hyperfine's CI](https://github.com/sharkdp/hyperfine/blob/e8ff88dad130d4b4bc2362be92aa8dfedc35074a/.github/workflows/CICD.yml#L71-L84)
+# Linker Rustflags and debian packages stolen from [just's ci](https://github.com/casey/just/blob/b4efe2628a8d0e8f936498f5ac5fd5764f4063f8/.github/workflows/release.yaml)
 on:
   push:
     tags: ['v*']
