@@ -7,16 +7,15 @@ on:
   workflow_dispatch:
 
 env:
-  CICD_INTERMEDIATES_DIR: "_cicd-intermediates"
-  RUST_TOOLCHAIN: "1.72.0"
+  CICD_INTERMEDIATES_DIR: '_cicd-intermediates'
+  RUST_TOOLCHAIN: '1.72.0'
 
 jobs:
   publish-server:
     name: Publish Server to RubyGems
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: server
+    defaults: { run: { working-directory: server } }
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,11 +32,12 @@ jobs:
   lint-format-client-rs:
     name: Lint and Format rust client
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client-rs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: CD client-rs
-        run: cd client-rs
       - name: Lint
         run: cargo clippy --no-deps --all-targets -- -D warnings
       - name: Format
@@ -46,16 +46,16 @@ jobs:
     name: Extract crate metadata
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Extract crate information
-      id: crate_metadata
-      working-directory: client-rs
-      run: |
-        cargo metadata --no-deps --format-version 1 | jq -r '"name=" + .packages[0].name' | tee -a $GITHUB_OUTPUT
-        cargo metadata --no-deps --format-version 1 | jq -r '"version=" + .packages[0].version' | tee -a $GITHUB_OUTPUT
-        cargo metadata --no-deps --format-version 1 | jq -r '"maintainer=" + .packages[0].authors[0]' | tee -a $GITHUB_OUTPUT
-        cargo metadata --no-deps --format-version 1 | jq -r '"homepage=" + .packages[0].homepage' | tee -a $GITHUB_OUTPUT
-        cargo metadata --no-deps --format-version 1 | jq -r '"msrv=" + .packages[0].rust_version' | tee -a $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
+      - name: Extract crate information
+        id: crate_metadata
+        working-directory: client-rs
+        run: |
+          cargo metadata --no-deps --format-version 1 | jq -r '"name=" + .packages[0].name' | tee -a $GITHUB_OUTPUT
+          cargo metadata --no-deps --format-version 1 | jq -r '"version=" + .packages[0].version' | tee -a $GITHUB_OUTPUT
+          cargo metadata --no-deps --format-version 1 | jq -r '"maintainer=" + .packages[0].authors[0]' | tee -a $GITHUB_OUTPUT
+          cargo metadata --no-deps --format-version 1 | jq -r '"homepage=" + .packages[0].homepage' | tee -a $GITHUB_OUTPUT
+          cargo metadata --no-deps --format-version 1 | jq -r '"msrv=" + .packages[0].rust_version' | tee -a $GITHUB_OUTPUT
     outputs:
       name: ${{ steps.crate_metadata.outputs.name }}
       version: ${{ steps.crate_metadata.outputs.version }}
@@ -66,113 +66,112 @@ jobs:
     name: ${{ matrix.job.target }} (on ${{ matrix.job.os }})
     needs: [lint-format-client-rs, crate_metadata]
     runs-on: ${{ matrix.job.os }}
-    defaults:
-      run:
-        working-directory: client-rs
+    defaults: { run: { working-directory: client-rs } }
     strategy:
       fail-fast: true
       matrix:
         job:
-        - target: aarch64-unknown-linux-gnu
-          os: ubuntu-20.04
-          use-cross: true
-        - target: aarch64-unknown-linux-musl
-          os: ubuntu-20.04
-          use-cross: true
-        - target: aarch64-apple-darwin
-          os: macos-14
-        - target: arm-unknown-linux-gnueabihf
-          os: ubuntu-20.04
-          use-cross: true
-        - target: arm-unknown-linux-musleabihf
-          os: ubuntu-20.04
-          use-cross: true
-        - target: i686-pc-windows-msvc
-          os: windows-2019
-        - target: i686-unknown-linux-gnu
-          os: ubuntu-20.04
-          use-cross: true
-        - target: i686-unknown-linux-musl
-          os: ubuntu-20.04
-          use-cross: true
-        - target: x86_64-apple-darwin
-          os: macos-12
-        # - { target: x86_64-pc-windows-gnu       , os: windows-2019                  }
-        - target: x86_64-pc-windows-msvc
-          os: windows-2019
-        - target: x86_64-unknown-linux-gnu
-          os: ubuntu-20.04
-          use-cross: true
-        - target: x86_64-unknown-linux-musl
-          os: ubuntu-20.04
-          use-cross: true
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-20.04
+            use-cross: true
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-20.04
+            use-cross: true
+          - target: aarch64-apple-darwin
+            os: macos-14
+          - target: arm-unknown-linux-gnueabihf
+            os: ubuntu-20.04
+            use-cross: true
+          - target: arm-unknown-linux-musleabihf
+            os: ubuntu-20.04
+            use-cross: true
+          - target: i686-pc-windows-msvc
+            os: windows-2019
+          - target: i686-unknown-linux-gnu
+            os: ubuntu-20.04
+            use-cross: true
+          - target: i686-unknown-linux-musl
+            os: ubuntu-20.04
+            use-cross: true
+          - target: x86_64-apple-darwin
+            os: macos-12
+          # - { target: x86_64-pc-windows-gnu       , os: windows-2019                  }
+          - target: x86_64-pc-windows-msvc
+            os: windows-2019
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-20.04
+            use-cross: true
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-20.04
+            use-cross: true
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Cache dependencies
-      uses: Swatinem/rust-cache@v2
-    - name: Build binary
-      uses: houseabsolute/actions-rust-cross@v0
-      with:
-        working-directory: client-rs
-        toolchain: ${{ env.RUST_TOOLCHAIN }}
-        target: ${{ matrix.job.target }}
-        args: "--locked --release"
-        strip: true
-    - name: Set binary name & path
-      id: bin
-      run: |
-        # Figure out suffix of binary
-        EXE_suffix=""
-        case ${{ matrix.job.target }} in
-          *-pc-windows-*) EXE_suffix=".exe" ;;
-        esac;
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Build binary
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          working-directory: client-rs
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          target: ${{ matrix.job.target }}
+          args: '--locked --release'
+          strip: true
+      - name: Set binary name & path
+        id: bin
+        run: |
+          # Figure out suffix of binary
+          EXE_suffix=""
+          case ${{ matrix.job.target }} in
+            *-pc-windows-*) EXE_suffix=".exe" ;;
+          esac;
 
-        # Setup paths
-        BIN_NAME="${{ needs.crate_metadata.outputs.name }}${EXE_suffix}"
-        BIN_PATH="target/${{ matrix.job.target }}/release/${BIN_NAME}"
+          # Setup paths
+          BIN_NAME="${{ needs.crate_metadata.outputs.name }}${EXE_suffix}"
+          BIN_PATH="target/${{ matrix.job.target }}/release/${BIN_NAME}"
 
-        # Let subsequent steps know where to find the binary
-        echo "BIN_PATH=${BIN_PATH}" >> $GITHUB_OUTPUT
-        echo "BIN_NAME=${BIN_NAME}" >> $GITHUB_OUTPUT
-    - name: Create archive
-      id: package
-      run: |
-        PKG_suffix=".tar.gz" ; case ${{ matrix.job.target }} in *-pc-windows-*) PKG_suffix=".zip" ;; esac;
-        PKG_BASENAME=${{ needs.crate_metadata.outputs.name }}-v${{ needs.crate_metadata.outputs.version }}-${{ matrix.job.target }}
-        PKG_NAME=${PKG_BASENAME}${PKG_suffix}
-        echo "PKG_NAME=${PKG_NAME}" >> $GITHUB_OUTPUT
+          # Let subsequent steps know where to find the binary
+          echo "BIN_PATH=${BIN_PATH}" >> $GITHUB_OUTPUT
+          echo "BIN_NAME=${BIN_NAME}" >> $GITHUB_OUTPUT
+      - name: Create archive
+        id: package
+        run: |
+          PKG_suffix=".tar.gz" ; case ${{ matrix.job.target }} in *-pc-windows-*) PKG_suffix=".zip" ;; esac;
+          PKG_BASENAME=${{ needs.crate_metadata.outputs.name }}-v${{ needs.crate_metadata.outputs.version }}-${{ matrix.job.target }}
+          PKG_NAME=${PKG_BASENAME}${PKG_suffix}
+          echo "PKG_NAME=${PKG_NAME}" >> $GITHUB_OUTPUT
 
-        PKG_STAGING="${{ env.CICD_INTERMEDIATES_DIR }}/package"
-        ARCHIVE_DIR="${PKG_STAGING}/${PKG_BASENAME}/"
-        mkdir -p "${ARCHIVE_DIR}"
-        mkdir -p "${ARCHIVE_DIR}/autocomplete"
+          PKG_STAGING="${{ env.CICD_INTERMEDIATES_DIR }}/package"
+          ARCHIVE_DIR="${PKG_STAGING}/${PKG_BASENAME}/"
+          mkdir -p "${ARCHIVE_DIR}"
+          mkdir -p "${ARCHIVE_DIR}/autocomplete"
 
-        # Binary
-        cp "${{ steps.bin.outputs.BIN_PATH }}" "$ARCHIVE_DIR"
+          # Binary
+          cp "${{ steps.bin.outputs.BIN_PATH }}" "$ARCHIVE_DIR"
 
-        # README, LICENSE files
-        cp "../README.adoc" "../LICENSE.txt" "$ARCHIVE_DIR"
+          # README, LICENSE files
+          cp "../README.adoc" "../LICENSE.txt" "$ARCHIVE_DIR"
 
-        # base compressed package
-        pushd "${PKG_STAGING}/" >/dev/null
-        case ${{ matrix.job.target }} in
-          *-pc-windows-*) 7z -y a "${PKG_NAME}" "${PKG_BASENAME}"/* | tail -2 ;;
-          *) tar czf "${PKG_NAME}" "${PKG_BASENAME}"/* ;;
-        esac;
-        popd >/dev/null
+          # base compressed package
+          pushd "${PKG_STAGING}/" >/dev/null
+          case ${{ matrix.job.target }} in
+            *-pc-windows-*) 7z -y a "${PKG_NAME}" "${PKG_BASENAME}"/* | tail -2 ;;
+            *) tar czf "${PKG_NAME}" "${PKG_BASENAME}"/* ;;
+          esac;
+          popd >/dev/null
 
-        # Let subsequent steps know where to find the compressed package
-        echo "PKG_PATH=${PKG_STAGING}/${PKG_NAME}" >> $GITHUB_OUTPUT
-    - name: Github Release
-      uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: |
-          ${{ steps.package.outputs.PKG_PATH }}
+          # Let subsequent steps know where to find the compressed package
+          echo "PKG_PATH=${PKG_STAGING}/${PKG_NAME}" >> $GITHUB_OUTPUT
+      - name: Github Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            ${{ steps.package.outputs.PKG_PATH }}
   publish-client-go:
     name: Check Go Client
     runs-on: ubuntu-latest
+    defaults: { run: { working-directory: client-go } }
     steps:
       - name: Install Go
         uses: actions/setup-go@v5
@@ -181,7 +180,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build go client
-        working-directory: client-go
         run: |
           go mod tidy
           go mod vendor
