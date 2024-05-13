@@ -23,4 +23,4 @@ runs:
     - if: startsWith(inputs.target, 'aarch64-unknown-linux-')
       shell: bash
       run: |
-        sudo apt-get -y install gcc-aarch64-linux-gnu gcc-multilib
+        sudo apt-get -y install gcc-aarch64-linux-gnu gcc-multilib libc6-dev-i386
