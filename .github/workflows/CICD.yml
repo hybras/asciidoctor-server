@@ -72,6 +72,8 @@ jobs:
     needs: [lint-format-client-rs, crate_metadata]
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
+    env:
+      BUILD_CMD: cargo
     strategy:
       fail-fast: false
       matrix:
@@ -112,33 +114,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install proto c
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update -y --quiet
-          sudo apt-get install -y --quiet protobuf-compiler
-          protoc --version
-      - name: Install proto c
-        if: runner.os == 'macOS'
-        run: |
-          brew update --quiet
-          brew install --quiet protobuf
-          protoc --version
-      - name: Install proto c
-        if: runner.os == 'Windows'
-        run: |
-          choco install protoc
-          protoc --version
+      - name: Install protobuf
+        uses: ./github/actions/protoc
+      - name: Try to cross w/o cross
+        uses: ./github/actions/manual-cross-prereqs
+        if: ${{ ! matrix.job.use-cross }}
+        with:
+          target: ${{ matrix.job.target }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.job.target }}
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
-      - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
+      - name: Install cross
+        if: matrix.job.use-cross
+        uses: taiki-e/install-action@v2
         with:
-          working-directory: client-rs
-          toolchain: ${{ env.RUST_TOOLCHAIN }}
-          target: ${{ matrix.job.target }}
-          args: '--locked --release'
-          strip: true
+          tool: cross
+      - name: Overwrite build command env variable
+        if: matrix.job.use-cross
+        shell: bash
+        run: echo "BUILD_CMD=cross" >> $GITHUB_ENV
+      - name: Build
+        run: $BUILD_CMD build --locked --release --target=${{ matrix.job.target }}
       - name: Set binary name & path
         id: bin
         run: |

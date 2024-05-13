@@ -1,0 +1,25 @@
+name: Install Protobuf Compiler
+description: Install the Protobuf Compiler using the system package manager
+runs:
+  using: "composite"
+  steps:
+    - name: Install Protobuf Compiler
+      shell: bash
+      run: |
+        sudo apt-get update -y --quiet
+        sudo apt-get install -y --quiet protobuf-compiler
+        protoc --version
+      if: runner.os == 'Linux'
+    - name: Install Protobuf Compiler
+      shell: bash
+      run: |
+        brew update --quiet
+        brew install --quiet protobuf
+        protoc --version
+      if: runner.os == 'macOS'
+    - name: Install Protobuf Compiler
+      shell: bash
+      run: |
+        choco install protoc
+        protoc --version
+      if: runner.os == 'Windows'
