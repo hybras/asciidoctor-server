@@ -9,13 +9,18 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install cross compilation prerequisites
+
+    - if: startsWith(inputs.target, 'arm-unknown-linux-')
       shell: bash
       run: |
-        sudo apt-get -y install gcc-arm-linux-gnueabihf;
-      if: startsWith(inputs.target, 'arm-unknown-linux-')
-    - name: Install cross compilation prerequisites
+        sudo apt-get -y install gcc-arm-linux-gnueabihf
+
+    - if: startsWith(inputs.target, 'i686-unknown-linux-')
       shell: bash
       run: |
-        sudo apt-get -y install gcc-aarch64-linux-gnu
-      if: inputs.target ==  'aarch64-unknown-linux-gnu'
+        sudo apt-get -y install gcc-multilib
+
+    - if: inputs.target ==  'aarch64-unknown-linux-gnu'
+      shell: bash
+      run: |
+        sudo apt-get -y install gcc-aarch64-linux-gnu gcc-multilib
