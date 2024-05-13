@@ -9,7 +9,6 @@ on:
 
 env:
   CICD_INTERMEDIATES_DIR: '_cicd-intermediates'
-  RUST_TOOLCHAIN: '1.72.0'
 
 jobs:
   publish-server:
