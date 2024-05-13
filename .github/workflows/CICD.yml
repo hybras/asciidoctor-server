@@ -113,19 +113,15 @@ jobs:
           - target: arm-unknown-linux-gnueabihf
             rustflags: '--codegen linker=arm-linux-gnueabihf-gcc'
             os: ubuntu-20.04
-            # use-cross: true
           - target: arm-unknown-linux-musleabihf
             rustflags: '--codegen linker=arm-linux-gnueabihf-gcc'
             os: ubuntu-20.04
-            # use-cross: true
           - target: i686-pc-windows-msvc
             os: windows-2019
           - target: i686-unknown-linux-gnu
             os: ubuntu-20.04
-            # use-cross: true
           - target: i686-unknown-linux-musl
             os: ubuntu-20.04
-            # use-cross: true
           - target: x86_64-apple-darwin
             os: macos-12
           # - { target: x86_64-pc-windows-gnu       , os: windows-2019                  }
@@ -153,15 +149,6 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: client-rs
-      - name: Install cross
-        if: matrix.job.use-cross
-        uses: taiki-e/install-action@v2
-        with:
-          tool: cross
-      - name: Overwrite build command env variable
-        if: matrix.job.use-cross
-        shell: bash
-        run: echo "BUILD_CMD=cross" >> $GITHUB_ENV
       - name: Build
         run: $BUILD_CMD build --locked --release --target=${{ matrix.job.target }}
       - name: Set binary name & path
