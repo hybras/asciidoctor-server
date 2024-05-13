@@ -28,15 +28,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_max_delay(Duration::from_secs(max_timeout))
         .with_jitter();
     let endpoint = Endpoint::try_from("http://[::]:50051")?;
-    let connector;
     cfg_if!(
         if #[cfg(unix)] {
-            connector = move |_: Uri| {
+            let connector = move |_: Uri| {
                 use tokio::net::UnixStream;
                 UnixStream::connect(addy.path().to_owned())
             };
         } else if #[cfg(windows)] {
-            connector = move |_: Uri| {
+            let connector = move |_: Uri| {
                 use tokio::net::windows::named_pipe as pipe;
                 pipe::ClientOptions::new().open(addy.path().to_owned())
             };
