@@ -83,16 +83,20 @@ jobs:
         job:
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-20.04
+            target_rustflags: '--codegen linker=aarch64-linux-gnu-gcc'
             # use-cross: true
           - target: aarch64-unknown-linux-musl
             os: ubuntu-20.04
+            target_rustflags: '--codegen linker=aarch64-linux-gnu-gcc'
             # use-cross: true
           - target: aarch64-apple-darwin
             os: macos-14
           - target: arm-unknown-linux-gnueabihf
+            rustflags: '--codegen linker=arm-linux-gnueabihf-gcc'
             os: ubuntu-20.04
             # use-cross: true
           - target: arm-unknown-linux-musleabihf
+            rustflags: '--codegen linker=arm-linux-gnueabihf-gcc'
             os: ubuntu-20.04
             # use-cross: true
           - target: i686-pc-windows-msvc

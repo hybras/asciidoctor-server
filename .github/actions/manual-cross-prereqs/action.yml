@@ -20,7 +20,7 @@ runs:
       run: |
         sudo apt-get -y install gcc-multilib
 
-    - if: inputs.target ==  'aarch64-unknown-linux-gnu'
+    - if: startsWith(inputs.target, 'aarch64-unknown-linux-')
       shell: bash
       run: |
         sudo apt-get -y install gcc-aarch64-linux-gnu gcc-multilib
