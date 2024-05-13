@@ -102,19 +102,19 @@ jobs:
         job:
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-20.04
-            target_rustflags: '--codegen linker=aarch64-linux-gnu-gcc'
+            linker: '-C linker=aarch64-linux-gnu-gcc'
             # use-cross: true
           - target: aarch64-unknown-linux-musl
             os: ubuntu-20.04
-            target_rustflags: '--codegen linker=aarch64-linux-gnu-gcc'
+            linker: '-C linker=aarch64-linux-gnu-gcc'
             # use-cross: true
           - target: aarch64-apple-darwin
             os: macos-14
           - target: arm-unknown-linux-gnueabihf
-            rustflags: '--codegen linker=arm-linux-gnueabihf-gcc'
+            linker: '-C linker=arm-linux-gnueabihf-gcc'
             os: ubuntu-20.04
           - target: arm-unknown-linux-musleabihf
-            rustflags: '--codegen linker=arm-linux-gnueabihf-gcc'
+            linker: '-C linker=arm-linux-gnueabihf-gcc'
             os: ubuntu-20.04
           - target: i686-pc-windows-msvc
             os: windows-2019
@@ -151,6 +151,8 @@ jobs:
           workspaces: client-rs
       - name: Build
         run: $BUILD_CMD build --locked --release --target=${{ matrix.job.target }}
+        env:
+          RUSTFLAGS: ${{ matrix.job.linker }}
       - name: Set binary name & path
         id: bin
         run: |
