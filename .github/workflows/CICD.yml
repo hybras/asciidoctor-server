@@ -64,9 +64,7 @@ jobs:
         with:
           workspaces: client-rs
       - name: Install protoc
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y protobuf-compiler
+        uses: ./.github/actions/protoc
       - name: Lint
         run: cargo clippy --no-deps --all-targets -- -D warnings
       - name: Format
