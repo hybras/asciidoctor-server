@@ -122,7 +122,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install protobuf
         uses: ./.github/actions/protoc
-      - name: Try to cross w/o cross
+      - name: Setup cross compilation
         uses: ./.github/actions/manual-cross-prereqs
         if: ${{ ! matrix.job.use-cross && runner.os == 'Linux' }}
         with:
@@ -133,6 +133,8 @@ jobs:
           targets: ${{ matrix.job.target }}
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: client-rs
       - name: Install cross
         if: matrix.job.use-cross
         uses: taiki-e/install-action@v2
