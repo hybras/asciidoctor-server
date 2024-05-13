@@ -36,6 +36,7 @@ jobs:
     defaults:
       run:
         working-directory: client-rs
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v4
