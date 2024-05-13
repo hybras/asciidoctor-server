@@ -73,7 +73,7 @@ jobs:
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         job:
           - target: aarch64-unknown-linux-gnu
@@ -115,14 +115,14 @@ jobs:
       - name: Install proto c
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y protobuf-compiler
+          sudo apt-get update -y --quiet
+          sudo apt-get install -y --quiet protobuf-compiler
           protoc --version
       - name: Install proto c
         if: runner.os == 'macOS'
         run: |
-          brew update
-          brew install protobuf
+          brew update --quiet
+          brew install --quiet protobuf
           protoc --version
       - name: Install proto c
         if: runner.os == 'Windows'
