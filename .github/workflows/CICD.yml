@@ -115,9 +115,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install protobuf
-        uses: ./github/actions/protoc
+        uses: ./.github/actions/protoc
       - name: Try to cross w/o cross
-        uses: ./github/actions/manual-cross-prereqs
+        uses: ./.github/actions/manual-cross-prereqs
         if: ${{ ! matrix.job.use-cross }}
         with:
           target: ${{ matrix.job.target }}
