@@ -80,7 +80,7 @@ jobs:
         job:
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-20.04
-            use-cross: true
+            # use-cross: true
           - target: aarch64-unknown-linux-musl
             os: ubuntu-20.04
             use-cross: true
@@ -96,7 +96,7 @@ jobs:
             os: windows-2019
           - target: i686-unknown-linux-gnu
             os: ubuntu-20.04
-            use-cross: true
+            # use-cross: true
           - target: i686-unknown-linux-musl
             os: ubuntu-20.04
             use-cross: true
