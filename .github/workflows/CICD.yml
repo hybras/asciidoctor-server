@@ -94,8 +94,6 @@ jobs:
     needs: [lint-format-client-rs, crate_metadata]
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
-    env:
-      BUILD_CMD: cargo
     strategy:
       fail-fast: false
       matrix:
@@ -150,7 +148,7 @@ jobs:
         with:
           workspaces: client-rs
       - name: Build
-        run: $BUILD_CMD build --locked --release --target=${{ matrix.job.target }}
+        run: cargo build --locked --release --target=${{ matrix.job.target }}
         env:
           RUSTFLAGS: ${{ matrix.job.linker }}
       - name: Set binary name & path
