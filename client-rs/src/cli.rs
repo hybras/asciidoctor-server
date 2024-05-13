@@ -27,7 +27,7 @@ pub struct Args {
 
     /// max timeout time for exponential backoff
     #[argh(option, default = "2")]
-    pub max_timeout: u64
+    pub max_timeout: u64,
 }
 
 fn default_server_address() -> Url {

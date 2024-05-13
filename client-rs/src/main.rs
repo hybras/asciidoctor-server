@@ -19,7 +19,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         no_header_footer,
         server_address,
         input: _,
-        max_timeout
+        max_timeout,
     } = argh::from_env();
     let addy = server_address.clone();
     let backoff = ExponentialBuilder::default()
