@@ -117,15 +117,18 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y protobuf-compiler
+          protoc --version
       - name: Install proto c
         if: runner.os == 'macOS'
         run: |
           brew update
           brew install protobuf
+          protoc --version
       - name: Install proto c
         if: runner.os == 'Windows'
         run: |
           choco install protoc
+          protoc --version
       - name: Cache dependencies
         uses: Swatinem/rust-cache@v2
       - name: Build binary
