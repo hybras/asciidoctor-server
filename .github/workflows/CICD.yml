@@ -31,6 +31,24 @@ jobs:
         run: |
           gem build asciidoctor-server.gemspec
           gem push asciidoctor-server*.gem --key ${{ secrets.RUBYGEMS_API_KEY }}
+  publish-client-go:
+    name: Check Go Client
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: client-go } }
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build go client
+        run: |
+          go mod tidy
+          go mod vendor
+          go build
+          go install
+          # go test
   lint-format-client-rs:
     name: Lint and Format rust client
     runs-on: ubuntu-latest
@@ -197,21 +215,3 @@ jobs:
         with:
           files: |
             ${{ steps.package.outputs.PKG_PATH }}
-  publish-client-go:
-    name: Check Go Client
-    runs-on: ubuntu-latest
-    defaults: { run: { working-directory: client-go } }
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22.2'
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Build go client
-        run: |
-          go mod tidy
-          go mod vendor
-          go build
-          go install
-          # go test
