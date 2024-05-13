@@ -12,6 +12,7 @@ env:
 
 jobs:
   publish-server:
+    name: Publish Server to RubyGems
     runs-on: ubuntu-latest
     defaults:
       run:
