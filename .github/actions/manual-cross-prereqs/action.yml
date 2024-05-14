@@ -9,18 +9,46 @@ inputs:
 runs:
   using: "composite"
   steps:
-
-    - if: startsWith(inputs.target, 'arm-unknown-linux-')
+    - if: ${{ ( ! contains(inputs.target, '-unknown-linux-') ) || runner.os != 'Linux' }}
+      run: |
+        echo "Cross compilation is only supported for Linux targets."
+        exit 1
+      shell: bash
+    - name: Install cross compilation prerequisites
       shell: bash
       run: |
-        sudo apt-get -y install gcc-arm-linux-gnueabihf
 
-    - if: startsWith(inputs.target, 'i686-unknown-linux-')
-      shell: bash
-      run: |
-        sudo apt-get -y install gcc-multilib
+        ARCH=$(cut -d'-' -f1 <<< "${{ inputs.target }}")
+        OTHER=$(cut -d'-' -f4 <<< "${{ inputs.target }}")
+        PACKAGE_ARCH="NOPE"
 
-    - if: startsWith(inputs.target, 'aarch64-unknown-linux-')
-      shell: bash
-      run: |
-        sudo apt-get -y install gcc-aarch64-linux-gnu gcc-multilib libc6-dev-i386
+        case $ARCH in
+          arm)
+            case $OTHER in
+              gnueabihf | musleabihf)
+                PACKAGE_ARCH="armhf"
+                ;;
+              gnueabi | musleabi)
+                PACKAGE_ARCH="armel"
+                ;;
+              *)
+                echo "Unsupported architecture: $ARCH-$OTHER"
+                exit 1
+                ;;
+            esac
+          aarch64)
+            PACKAGE_ARCH="arm64"
+            ;;
+          x86_64)
+            PACKAGE_ARCH="amd64"
+            ;;
+          i686)
+            PACKAGE_ARCH="i386"
+            ;;
+          *)
+            echo "Unsupported architecture: $ARCH"
+            exit 1
+            ;;
+        esac
+        export DEBIAN_FRONTEND=noninteractive
+        sudo apt-get -y install crossbuild-essential-$PACKAGE_ARCH
