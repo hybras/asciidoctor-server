@@ -5,7 +5,6 @@ use tower::service_fn;
 
 use asciidoctor_client::Args;
 use std::io::Read;
-use std::process::Command;
 use std::time::Duration;
 
 use asciidoctor_client::grpc::asciidoctor_converter_client::AsciidoctorConverterClient;
@@ -29,17 +28,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_max_delay(Duration::from_secs(max_timeout))
         .with_jitter();
     let endpoint = Endpoint::try_from("http://[::]:50051")?;
-    let connector;
-    std::fs::read_to_string("/etc/os-release")
-        .map_err(|_| "Failed to read /etc/os-release")?;
+    std::fs::read_to_string("/etc/os-release").map_err(|_| "Failed to read /etc/os-release")?;
     cfg_if!(
         if #[cfg(unix)] {
-            connector = move |_: Uri| {
+            let connector = move |_: Uri| {
                 use tokio::net::UnixStream;
                 UnixStream::connect(addy.path().to_owned())
             };
         } else if #[cfg(windows)] {
-            connector = async move |_: Uri| {
+            let connector = async move |_: Uri| {
                 use tokio::net::windows::named_pipe as pipe;
                 pipe::ClientOptions::new().open(addy.path().to_owned())
             };
