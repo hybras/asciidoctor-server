@@ -21,6 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         input: _,
         max_timeout,
     } = argh::from_env();
+    let standalone = !no_header_footer;
     let addy = server_address.clone();
     let backoff = ExponentialBuilder::default()
         .with_min_delay(Duration::from_millis(125))
@@ -28,7 +29,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_max_delay(Duration::from_secs(max_timeout))
         .with_jitter();
     let endpoint = Endpoint::try_from("http://[::]:50051")?;
-    std::fs::read_to_string("/etc/os-release").map_err(|_| "Failed to read /etc/os-release")?;
     cfg_if!(
         if #[cfg(unix)] {
             let connector = move |_: Uri| {
@@ -65,7 +65,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         attributes,
         backend,
         extensions,
-        standalone: no_header_footer,
+        standalone,
     };
 
     let convert = || async {
