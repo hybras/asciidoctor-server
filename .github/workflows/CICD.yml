@@ -5,6 +5,9 @@ name: Publish CI artifacts
 on:
   push:
     tags: ['v*']
+    branches:
+      - "main"
+  pull_request:
   workflow_dispatch:
 
 env:
@@ -103,8 +106,8 @@ jobs:
           # - target: aarch64-unknown-linux-musl
           #   os: ubuntu-20.04
           #   linker: '-C linker=aarch64-linux-gnu-gcc'
-          # - target: aarch64-apple-darwin
-          #   os: macos-14
+          - target: aarch64-apple-darwin
+            os: macos-14
           # - target: arm-unknown-linux-gnueabihf
           #   linker: '-C linker=arm-linux-gnueabihf-gcc'
           #   os: ubuntu-20.04
@@ -117,24 +120,20 @@ jobs:
           #   os: ubuntu-20.04
           # - target: i686-unknown-linux-musl
           #   os: ubuntu-20.04
-          # - target: x86_64-apple-darwin
-          #   os: macos-12
+          - target: x86_64-apple-darwin
+            os: macos-12
           - target: x86_64-pc-windows-msvc
             os: windows-2019
-          - target: x86_64-unknown-linux-gnu
-            os: ubuntu-20.04
-          # - target: x86_64-unknown-linux-musl
-          #   os: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install protobuf
         uses: ./.github/actions/protoc
       - name: Setup cross compilation
-        uses: ./.github/actions/manual-cross-prereqs
-        if: ${{ ! matrix.job.use-cross && runner.os == 'Linux' }}
+        uses: hybras/actions-rust-cross@v0.1.0
+        if: ${{ runner.os == 'Linux' }}
         with:
-          target: ${{ matrix.job.target }}
+          rust_target: ${{ matrix.job.target }}
       - name: Install Rust toolchain
         id: rust-toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -147,8 +146,6 @@ jobs:
           key: os-${{ matrix.job.os }}-target-${{ matrix.job.target }}-rust-${{ steps.rust-toolchain.outputs.toolchain }}
       - name: Build
         run: cargo build --locked --release --target=${{ matrix.job.target }}
-        env:
-          RUSTFLAGS: ${{ matrix.job.linker }}
       - name: Set binary name & path
         id: bin
         run: |
