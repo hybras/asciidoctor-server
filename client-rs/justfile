@@ -2,4 +2,4 @@ default:
     @just --list
 
 run:
-    cargo run -- --address unix:../.asciidoctor-server.sock
+    cargo run -- --address unix:../.asciidoctor-server.sock --no-header-footer
