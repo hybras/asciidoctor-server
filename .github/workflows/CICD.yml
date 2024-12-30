@@ -92,7 +92,7 @@ jobs:
       homepage: ${{ steps.crate_metadata.outputs.homepage }}
       msrv: ${{ steps.crate_metadata.outputs.msrv }}
   build-client-rs:
-    name: ${{ matrix.job.target }} (on ${{ matrix.job.os }})
+    name: Build rust client for ${{ matrix.job.target }} (on ${{ matrix.job.os }})
     needs: [lint-format-client-rs, crate_metadata]
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
