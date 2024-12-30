@@ -134,9 +134,10 @@ jobs:
         with:
           tool: cargo-zigbuild
       - name: Setup cross compilation
-        uses: hybras/actions-rust-cross@v0.1.0
+        uses: hybras/actions-rust-cross@v0.2.0
         if: ${{ runner.os == 'Linux' }}
         with:
+          rust_target: ${{ matrix.job.target }}
           rust_target: ${{ matrix.job.target }}
       - name: Install Rust toolchain
         id: rust-toolchain
