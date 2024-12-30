@@ -138,7 +138,6 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         with:
           rust_target: ${{ matrix.job.target }}
-          rust_target: ${{ matrix.job.target }}
       - name: Install Rust toolchain
         id: rust-toolchain
         uses: dtolnay/rust-toolchain@stable
