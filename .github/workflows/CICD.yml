@@ -97,7 +97,7 @@ jobs:
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         job:
           - target: aarch64-unknown-linux-gnu
