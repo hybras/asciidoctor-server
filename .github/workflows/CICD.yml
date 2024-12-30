@@ -101,25 +101,21 @@ jobs:
       matrix:
         job:
           - target: aarch64-unknown-linux-gnu
-            os: ubuntu-22.04
-            linker: '-C linker=aarch64-linux-gnu-gcc'
-          # - target: aarch64-unknown-linux-musl
-          #   os: ubuntu-20.04
-          #   linker: '-C linker=aarch64-linux-gnu-gcc'
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-latest
           - target: aarch64-apple-darwin
             os: macos-14
-          # - target: arm-unknown-linux-gnueabihf
-          #   linker: '-C linker=arm-linux-gnueabihf-gcc'
-          #   os: ubuntu-20.04
-          # - target: arm-unknown-linux-musleabihf
-          #   linker: '-C linker=arm-linux-gnueabihf-gcc'
-          #   os: ubuntu-20.04
-          # - target: i686-pc-windows-msvc
-          #   os: windows-2019
-          # - target: i686-unknown-linux-gnu
-          #   os: ubuntu-20.04
-          # - target: i686-unknown-linux-musl
-          #   os: ubuntu-20.04
+          - target: arm-unknown-linux-gnueabihf
+            os: ubuntu-latest
+          - target: arm-unknown-linux-musleabihf
+            os: ubuntu-latest
+          - target: i686-pc-windows-msvc
+            os: windows-2019
+          - target: i686-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: i686-unknown-linux-musl
+            os: ubuntu-latest
           - target: x86_64-apple-darwin
             os: macos-12
           - target: x86_64-pc-windows-msvc
