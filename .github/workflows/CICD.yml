@@ -133,6 +133,8 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-zigbuild
+      - name: Install zig
+        uses: mlugg/setup-zig@v1
       - name: Setup cross compilation
         uses: hybras/actions-rust-cross@v0.2.0
         if: ${{ runner.os == 'Linux' }}
