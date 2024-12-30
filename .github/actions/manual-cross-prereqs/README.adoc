@@ -1,7 +1,0 @@
-= Cross compiling
-
-This action sets up cross compilation support for ubuntu.
-It installs the necessary packages.
-It is NOT sufficient for full blown package development.
-It only supports a handful of rust's most supported targets, with musl libc support thrown in for good measure.
-It does not set environment variables either (CC, LD, include, etc), so you will need to do that yourself.
