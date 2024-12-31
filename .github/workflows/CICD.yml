@@ -135,9 +135,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install protobuf
-        uses: ./.github/actions/protoc
-      - name: Install cargo-zigbuild
+      - name: Install protobuf and protoc,cargo-zigbuild
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-zigbuild
