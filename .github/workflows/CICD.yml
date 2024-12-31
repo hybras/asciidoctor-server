@@ -1,10 +1,21 @@
 name: Publish CI artifacts
 
 # rust build jobs based off of [hyperfine's CI](https://github.com/sharkdp/hyperfine/blob/e8ff88dad130d4b4bc2362be92aa8dfedc35074a/.github/workflows/CICD.yml#L71-L84)
-# Linker Rustflags and debian packages stolen from [just's ci](https://github.com/casey/just/blob/b4efe2628a8d0e8f936498f5ac5fd5764f4063f8/.github/workflows/release.yaml)
+# Linker Rustflags [just's ci](https://github.com/casey/just/blob/b4efe2628a8d0e8f936498f5ac5fd5764f4063f8/.github/workflows/release.yaml)
 on:
   push:
     tags: ['v*']
+    branches:
+      - "main"
+    paths-ignore:
+      - LICENSE.txt
+      - README.adoc
+      - renovate.json
+      - flake.lock
+      - flake.nix
+      - .gitignore
+      - .envrc
+  pull_request:
   workflow_dispatch:
 
 env:
@@ -89,7 +100,7 @@ jobs:
       homepage: ${{ steps.crate_metadata.outputs.homepage }}
       msrv: ${{ steps.crate_metadata.outputs.msrv }}
   build-client-rs:
-    name: ${{ matrix.job.target }} (on ${{ matrix.job.os }})
+    name: Build rust client for ${{ matrix.job.target }} (on ${{ matrix.job.os }})
     needs: [lint-format-client-rs, crate_metadata]
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
@@ -98,43 +109,41 @@ jobs:
       matrix:
         job:
           - target: aarch64-unknown-linux-gnu
-            os: ubuntu-22.04
-            linker: '-C linker=aarch64-linux-gnu-gcc'
-          # - target: aarch64-unknown-linux-musl
-          #   os: ubuntu-20.04
-          #   linker: '-C linker=aarch64-linux-gnu-gcc'
-          # - target: aarch64-apple-darwin
-          #   os: macos-14
-          # - target: arm-unknown-linux-gnueabihf
-          #   linker: '-C linker=arm-linux-gnueabihf-gcc'
-          #   os: ubuntu-20.04
-          # - target: arm-unknown-linux-musleabihf
-          #   linker: '-C linker=arm-linux-gnueabihf-gcc'
-          #   os: ubuntu-20.04
-          # - target: i686-pc-windows-msvc
-          #   os: windows-2019
-          # - target: i686-unknown-linux-gnu
-          #   os: ubuntu-20.04
-          # - target: i686-unknown-linux-musl
-          #   os: ubuntu-20.04
-          # - target: x86_64-apple-darwin
-          #   os: macos-12
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-latest
+            on-pr: true
+          - target: aarch64-apple-darwin
+            os: macos-14
+            on-pr: true
+          - target: arm-unknown-linux-gnueabihf
+            os: ubuntu-latest
+          - target: arm-unknown-linux-musleabihf
+            os: ubuntu-latest
+          - target: i686-pc-windows-msvc
+            os: windows-2019
+          - target: i686-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: i686-unknown-linux-musl
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-13
           - target: x86_64-pc-windows-msvc
             os: windows-2019
           - target: x86_64-unknown-linux-gnu
-            os: ubuntu-20.04
-          # - target: x86_64-unknown-linux-musl
-          #   os: ubuntu-20.04
+            os: ubuntu-latest
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            on-pr: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install protobuf
-        uses: ./.github/actions/protoc
-      - name: Setup cross compilation
-        uses: ./.github/actions/manual-cross-prereqs
-        if: ${{ ! matrix.job.use-cross && runner.os == 'Linux' }}
+      - name: Install protobuf and protoc,cargo-zigbuild
+        uses: taiki-e/install-action@v2
         with:
-          target: ${{ matrix.job.target }}
+          tool: cargo-zigbuild
+      - name: Install zig
+        uses: mlugg/setup-zig@v1
       - name: Install Rust toolchain
         id: rust-toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -146,9 +155,7 @@ jobs:
           workspaces: client-rs
           key: os-${{ matrix.job.os }}-target-${{ matrix.job.target }}-rust-${{ steps.rust-toolchain.outputs.toolchain }}
       - name: Build
-        run: cargo build --locked --release --target=${{ matrix.job.target }}
-        env:
-          RUSTFLAGS: ${{ matrix.job.linker }}
+        run: cargo zigbuild --locked --release --target=${{ matrix.job.target }}
       - name: Set binary name & path
         id: bin
         run: |
