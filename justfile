@@ -27,3 +27,12 @@ test:
     expected="<div class=\"paragraph\"><p><strong>hello</strong></p></div>"
     diff -w <(echo "$actual") <(echo "$expected")
     echo "Test passed"
+
+test-ci:
+    #!/bin/bash
+    set -euxo pipefail
+    just server/run 2> /dev/null &
+    actual=$(echo '*hello*' | just client-rs/run | tr -d '\n')
+    expected="<div class=\"paragraph\"><p><strong>hello</strong></p></div>"
+    diff -w <(echo "$actual") <(echo "$expected")
+    echo "Test passed"
