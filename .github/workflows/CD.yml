@@ -1,19 +1,16 @@
-name: Publish CI artifacts
+name: Release artifacts
 
-# rust build jobs based off of [hyperfine's CI](https://github.com/sharkdp/hyperfine/blob/e8ff88dad130d4b4bc2362be92aa8dfedc35074a/.github/workflows/CICD.yml#L71-L84)
-# Linker Rustflags [just's ci](https://github.com/casey/just/blob/b4efe2628a8d0e8f936498f5ac5fd5764f4063f8/.github/workflows/release.yaml)
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
 
-env:
-  CICD_INTERMEDIATES_DIR: '_cicd-intermediates'
+permissions:
+  contents: write
+  id-token: write
 
 jobs:
   create-release:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,9 +18,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
   publish-server:
-    permissions:
-      contents: write
-      id-token: write
     if: startsWith(github.ref, 'refs/tags/')
     name: Publish Server to RubyGems
     runs-on: ubuntu-latest
