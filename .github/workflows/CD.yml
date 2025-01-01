@@ -32,8 +32,17 @@ jobs:
           ruby-version: '3.1.4'
           bundler-cache: true
           working-directory: server
-      - name: Release server gem
-        uses: rubygems/release-gem@v1
+      - run: |
+          # Attribute commits to the last committer on HEAD
+          git config --global user.email "$(git log -1 --pretty=format:'%ae')"
+          git config --global user.name "$(git log -1 --pretty=format:'%an')"
+          git remote set-url origin "https://x-access-token:${{ github.token }}@github.com/$GITHUB_REPOSITORY"
+        shell: bash
+      - name: Configure trusted publishing credentials
+        uses: rubygems/configure-rubygems-credentials@v1.0.0
+      - name: Run release rake task
+        run: bundle exec rake release
+        shell: bash
   publish-client-go:
     name: Check Go Client
     runs-on: ubuntu-latest
