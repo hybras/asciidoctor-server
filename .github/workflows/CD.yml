@@ -125,10 +125,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install protobuf and protoc,cargo-zigbuild
+      - name: Install protobuf,cargo-zigbuild,just
         uses: taiki-e/install-action@v2
         with:
-          tool: cargo-zigbuild
+          tool: cargo-zigbuild, protoc,just
       - name: Install zig
         uses: mlugg/setup-zig@v1
       - name: Install Rust toolchain

@@ -36,7 +36,7 @@ jobs:
       - name: Install protobuf
         uses: taiki-e/install-action@v2
         with:
-          tool: protobuf,just
+          tool: protoc,just
       - name: Install Rust toolchain
         id: rust-toolchain
         uses: dtolnay/rust-toolchain@stable
