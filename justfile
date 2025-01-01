@@ -21,8 +21,9 @@ protoc-go:
 test:
     #!/bin/bash
     set -euxo pipefail
-    just server/run &
-    actual=$(echo '*hello*' | just client-rs/run)
+    just server/run 2> /dev/null &
+    actual=$(echo '*hello*' | just client-rs/run | tr -d '\n')
     kill -9 $(pgrep asciidoctor-server)
-    expected="<div class="paragraph"><p><strong>hello</strong></p></div>"
-    diff -w <(echo "$actual") - <<< "$expected"
+    expected="<div class=\"paragraph\"><p><strong>hello</strong></p></div>"
+    diff -w <(echo "$actual") <(echo "$expected")
+    echo "Test passed"
