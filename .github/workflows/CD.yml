@@ -11,7 +11,17 @@ env:
   CICD_INTERMEDIATES_DIR: '_cicd-intermediates'
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
   publish-server:
+    permissions:
+      contents: write
+      id-token: write
     if: startsWith(github.ref, 'refs/tags/')
     name: Publish Server to RubyGems
     runs-on: ubuntu-latest
@@ -26,10 +36,8 @@ jobs:
           ruby-version: '3.1.4'
           bundler-cache: true
           working-directory: server
-      - name: Build and publish gem
-        run: |
-          gem build asciidoctor-server.gemspec
-          gem push asciidoctor-server*.gem --key ${{ secrets.RUBYGEMS_API_KEY }}
+      - name: Release server gem
+        uses: rubygems/release-gem@v1
   publish-client-go:
     name: Check Go Client
     runs-on: ubuntu-latest
@@ -70,29 +78,9 @@ jobs:
         run: cargo clippy --no-deps --all-targets -- -D warnings
       - name: Format
         run: cargo fmt --check
-  crate_metadata:
-    name: Extract crate metadata
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Extract crate information
-        id: crate_metadata
-        working-directory: client-rs
-        run: |
-          cargo metadata --no-deps --format-version 1 | jq -r '"name=" + .packages[0].name' | tee -a $GITHUB_OUTPUT
-          cargo metadata --no-deps --format-version 1 | jq -r '"version=" + .packages[0].version' | tee -a $GITHUB_OUTPUT
-          cargo metadata --no-deps --format-version 1 | jq -r '"maintainer=" + .packages[0].authors[0]' | tee -a $GITHUB_OUTPUT
-          cargo metadata --no-deps --format-version 1 | jq -r '"homepage=" + .packages[0].homepage' | tee -a $GITHUB_OUTPUT
-          cargo metadata --no-deps --format-version 1 | jq -r '"msrv=" + .packages[0].rust_version' | tee -a $GITHUB_OUTPUT
-    outputs:
-      name: ${{ steps.crate_metadata.outputs.name }}
-      version: ${{ steps.crate_metadata.outputs.version }}
-      maintainer: ${{ steps.crate_metadata.outputs.maintainer }}
-      homepage: ${{ steps.crate_metadata.outputs.homepage }}
-      msrv: ${{ steps.crate_metadata.outputs.msrv }}
   build-client-rs:
     name: Build rust client for ${{ matrix.job.target }} (on ${{ matrix.job.os }})
-    needs: [lint-format-client-rs, crate_metadata]
+    needs: [lint-format-client-rs, create-release]
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
     strategy:
@@ -145,56 +133,10 @@ jobs:
         with:
           workspaces: client-rs
           key: os-${{ matrix.job.os }}-target-${{ matrix.job.target }}-rust-${{ steps.rust-toolchain.outputs.toolchain }}
-      - name: Build
-        run: cargo zigbuild --locked --release --target=${{ matrix.job.target }}
-      - name: Set binary name & path
-        id: bin
-        run: |
-          # Figure out suffix of binary
-          EXE_suffix=""
-          case ${{ matrix.job.target }} in
-            *-pc-windows-*) EXE_suffix=".exe" ;;
-          esac;
-
-          # Setup paths
-          BIN_NAME="${{ needs.crate_metadata.outputs.name }}${EXE_suffix}"
-          BIN_PATH="target/${{ matrix.job.target }}/release/${BIN_NAME}"
-
-          # Let subsequent steps know where to find the binary
-          echo "BIN_PATH=${BIN_PATH}" >> $GITHUB_OUTPUT
-          echo "BIN_NAME=${BIN_NAME}" >> $GITHUB_OUTPUT
-      - name: Create archive
-        id: package
-        run: |
-          PKG_suffix=".tar.gz" ; case ${{ matrix.job.target }} in *-pc-windows-*) PKG_suffix=".zip" ;; esac;
-          PKG_BASENAME=${{ needs.crate_metadata.outputs.name }}-v${{ needs.crate_metadata.outputs.version }}-${{ matrix.job.target }}
-          PKG_NAME=${PKG_BASENAME}${PKG_suffix}
-          echo "PKG_NAME=${PKG_NAME}" >> $GITHUB_OUTPUT
-
-          PKG_STAGING="${{ env.CICD_INTERMEDIATES_DIR }}/package"
-          ARCHIVE_DIR="${PKG_STAGING}/${PKG_BASENAME}/"
-          mkdir -p "${ARCHIVE_DIR}"
-          mkdir -p "${ARCHIVE_DIR}/autocomplete"
-
-          # Binary
-          cp "${{ steps.bin.outputs.BIN_PATH }}" "$ARCHIVE_DIR"
-
-          # README, LICENSE files
-          cp "../README.adoc" "../LICENSE.txt" "$ARCHIVE_DIR"
-
-          # base compressed package
-          pushd "${PKG_STAGING}/" >/dev/null
-          case ${{ matrix.job.target }} in
-            *-pc-windows-*) 7z -y a "${PKG_NAME}" "${PKG_BASENAME}"/* | tail -2 ;;
-            *) tar czf "${PKG_NAME}" "${PKG_BASENAME}"/* ;;
-          esac;
-          popd >/dev/null
-
-          # Let subsequent steps know where to find the compressed package
-          echo "PKG_PATH=${PKG_STAGING}/${PKG_NAME}" >> $GITHUB_OUTPUT
-      - name: Github Release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Upload rust binary
+        uses: taiki-e/upload-rust-binary-action@v1
         with:
-          files: |
-            ${{ steps.package.outputs.PKG_PATH }}
+          locked: true
+          bin: asciidoctor-client
+          target: ${{ matrix.job.target }}
+          token: ${{ secrets.GITHUB_TOKEN }}
