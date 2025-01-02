@@ -143,3 +143,5 @@ jobs:
           bin: asciidoctor-client
           target: ${{ matrix.job.target }}
           token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          PROTOC: "/home/runner/.install-action/bin/protoc"
