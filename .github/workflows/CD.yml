@@ -128,6 +128,8 @@ jobs:
         uses: taiki-e/upload-rust-binary-action@v1
         with:
           locked: true
+          manifest-path: client-rs/Cargo.toml
+          dry-run: true
           bin: asciidoctor-client
           target: ${{ matrix.job.target }}
           token: ${{ secrets.GITHUB_TOKEN }}
