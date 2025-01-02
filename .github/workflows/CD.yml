@@ -9,7 +9,6 @@ permissions:
   contents: write
   id-token: write
 
-
 jobs:
   publish-server:
     if: startsWith(github.ref, 'refs/tags/')
@@ -148,5 +147,3 @@ jobs:
           bin: asciidoctor-client
           target: ${{ matrix.job.target }}
           token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          PROTOC: "/home/runner/.install-action/bin/protoc"
