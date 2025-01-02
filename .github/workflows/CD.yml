@@ -140,7 +140,6 @@ jobs:
           locked: true
           build-tool: ${{ matrix.tool }}
           manifest-path: client-rs/Cargo.toml
-          dry-run: true
           bin: asciidoctor-client
           target: ${{ matrix.job.target }}
           token: ${{ secrets.GITHUB_TOKEN }}
