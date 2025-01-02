@@ -71,7 +71,7 @@ jobs:
         run: cargo fmt --check
   build-client-rs:
     name: Build rust client for ${{ matrix.job.target }} (on ${{ matrix.job.os }})
-    needs: [lint-format-client-rs, create-release]
+    needs: [lint-format-client-rs]
     runs-on: ${{ matrix.job.os }}
     defaults: { run: { working-directory: client-rs } }
     strategy:
