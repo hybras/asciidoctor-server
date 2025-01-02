@@ -10,13 +10,6 @@ permissions:
   id-token: write
 
 jobs:
-  create-release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: taiki-e/create-gh-release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
   publish-server:
     if: startsWith(github.ref, 'refs/tags/')
     name: Publish Server to RubyGems
@@ -32,17 +25,10 @@ jobs:
           ruby-version: '3.1.4'
           bundler-cache: true
           working-directory: server
-      - run: |
-          # Attribute commits to the last committer on HEAD
-          git config --global user.email "$(git log -1 --pretty=format:'%ae')"
-          git config --global user.name "$(git log -1 --pretty=format:'%an')"
-          git remote set-url origin "https://x-access-token:${{ github.token }}@github.com/$GITHUB_REPOSITORY"
-        shell: bash
-      - name: Configure trusted publishing credentials
-        uses: rubygems/configure-rubygems-credentials@v1.0.0
-      - name: Run release rake task
-        run: bundle exec rake release
-        shell: bash
+      - name: Release server gem
+        uses: hybras/release-gem@v1
+        with:
+          working-directory: server
   publish-client-go:
     name: Check Go Client
     runs-on: ubuntu-latest
