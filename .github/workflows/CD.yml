@@ -80,17 +80,16 @@ jobs:
     defaults: { run: { working-directory: client-rs } }
     strategy:
       fail-fast: false
+      max-parallel: 4
       matrix:
         include:
           - tool: cargo
-          - on-pr: false
         job:
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
             tool: cargo-zigbuild
           - target: aarch64-unknown-linux-musl
             os: ubuntu-latest
-            on-pr: true
             tool: cargo-zigbuild
           - target: aarch64-apple-darwin
             os: macos-14
@@ -110,14 +109,12 @@ jobs:
             tool: cargo-zigbuild
           - target: x86_64-apple-darwin
             os: macos-13
-            on-pr: true
           - target: x86_64-pc-windows-msvc
             os: windows-2019
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
           - target: x86_64-unknown-linux-musl
             os: ubuntu-latest
-            on-pr: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
