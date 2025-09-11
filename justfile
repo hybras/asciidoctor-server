@@ -23,16 +23,11 @@ test:
     set -euxo pipefail
     just server/run 2> /dev/null &
     actual=$(echo '*hello*' | just client-rs/run | tr -d '\n')
-    kill -9 $(pgrep asciidoctor-server)
-    expected="<div class=\"paragraph\"><p><strong>hello</strong></p></div>"
-    diff -w <(echo "$actual") <(echo "$expected")
-    echo "Test passed"
-
-test-ci:
-    #!/bin/bash
-    set -euxo pipefail
-    just server/run 2> /dev/null &
-    actual=$(echo '*hello*' | just client-rs/run | tr -d '\n')
+    if [[ -n "${CI:-}" ]]; then
+        echo "Running test in CI environment. Don't kill test server process"
+    else
+        kill -9 $(pgrep asciidoctor-server)
+    fi
     expected="<div class=\"paragraph\"><p><strong>hello</strong></p></div>"
     diff -w <(echo "$actual") <(echo "$expected")
     echo "Test passed"

@@ -56,4 +56,4 @@ jobs:
         run: cargo build --locked
         working-directory: client-rs
       - name: Test
-        run: just test-ci
+        run: just test
