@@ -9,10 +9,15 @@ require "asciidoctor"
 require "logger"
 require "grpc"
 
-module Asciidoctor::Server::Logging
-  LOGGER = Logger.new $stderr, level: Logger::INFO
-  def logger
-    LOGGER
+module Asciidoctor
+  module Server
+    # Log everything to stderr using the logger library
+    module Logging
+      LOGGER = Logger.new $stderr, level: Logger::INFO
+      def logger
+        LOGGER
+      end
+    end
   end
 end
 
