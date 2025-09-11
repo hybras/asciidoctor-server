@@ -14,11 +14,12 @@ module Asciidoctor
           ).parse(args)
         end
 
-        def parse(args)
+        def parse(args) # rubocop:disable Metrics/MethodLength
           OptionParser.new do |parser|
             parser.banner = "Usage: asciidoctor-server [options]"
             parser.on("-addr ADDRESS", "--address ADDRESS",
-              "Server address (default: unix socket, can be overridden with ASCIIDOCTOR_SERVER_ADDRESS env var)")
+                      "Server address (default: unix socket, " \
+                      "can be overridden with ASCIIDOCTOR_SERVER_ADDRESS env var)")
             parser.on("-t THREAD_POOL_SIZE", "--thread_pool_size", Integer, "thread pool size")
             parser.on("-v", "--version", "Show version") do
               puts Asciidoctor::Server::VERSION
