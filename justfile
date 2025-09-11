@@ -21,6 +21,7 @@ protoc-go:
 test:
     #!/bin/bash
     set -euxo pipefail
+    export ASCIIDOCTOR_SERVER_ADDRESS="${ASCIIDOCTOR_SERVER_ADDRESS:-unix:$PWD/.asciidoctor-server.sock}"
     just server/run 2> /dev/null &
     actual=$(echo '*hello*' | just client-rs/run | tr -d '\n')
     if [[ -n "${CI:-}" ]]; then
