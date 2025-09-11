@@ -10,6 +10,8 @@ use std::time::Duration;
 use asciidoctor_client::grpc::asciidoctor_converter_client::AsciidoctorConverterClient;
 use asciidoctor_client::grpc::AsciidoctorConvertRequest;
 
+const UNUSED_HOST: &str = "http://[::]:50051";
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let Args {
@@ -28,31 +30,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_max_times(4)
         .with_max_delay(Duration::from_secs(max_timeout))
         .with_jitter();
-    let endpoint = Endpoint::try_from("http://[::]:50051")?;
-    cfg_if!(
-        if #[cfg(unix)] {
-            let connector = move |_: Uri| {
-                use tokio::net::UnixStream;
-                UnixStream::connect(addy.path().to_owned())
-            };
-        } else if #[cfg(windows)] {
-            let connector = async move |_: Uri| {
-                use tokio::net::windows::named_pipe as pipe;
-                pipe::ClientOptions::new().open(addy.path().to_owned())
-            };
-        } else {
-            compile_error!("Not windows or unix")
-        }
-    );
 
-    let channel = match server_address.scheme() {
-        "unix" => {
-            (|| endpoint.connect_with_connector(service_fn(connector.clone())))
-                .retry(&backoff)
-                .await?
-        }
-        _ => (|| endpoint.connect()).retry(&backoff).await?,
-    };
+    let channel = create_channel(addy, backoff.clone()).await?;
 
     let mut input = String::new();
     let mut stdin = std::io::stdin().lock();
@@ -78,4 +57,37 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("{}", output);
 
     Ok(())
+}
+
+async fn create_channel(
+    server_address: url::Url,
+    backoff: ExponentialBuilder,
+) -> Result<tonic::transport::Channel, Box<dyn std::error::Error>> {
+    let endpoint = Endpoint::try_from(UNUSED_HOST)?;
+
+    match server_address.scheme() {
+        "unix" => {
+            let addy = server_address.clone();
+            cfg_if!(
+                if #[cfg(unix)] {
+                    let connector = move |_: Uri| {
+                        use tokio::net::UnixStream;
+                        UnixStream::connect(addy.path().to_owned())
+                    };
+                } else if #[cfg(windows)] {
+                    let connector = async move |_: Uri| {
+                        use tokio::net::windows::named_pipe as pipe;
+                        pipe::ClientOptions::new().open(addy.path().to_owned())
+                    };
+                } else {
+                    compile_error!("Not windows or unix")
+                }
+            );
+            (|| endpoint.connect_with_connector(service_fn(connector.clone())))
+                .retry(&backoff)
+                .await
+        }
+        _ => (|| endpoint.connect()).retry(&backoff).await,
+    }
+    .map_err(|e| e.into())
 }
