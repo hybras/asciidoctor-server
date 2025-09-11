@@ -10,13 +10,15 @@ module Asciidoctor
         def self.parse(args)
           Options.new(
             ::GRPC::RpcServer::DEFAULT_POOL_SIZE,
-            "unix://#{Pathname.pwd / ".asciidoctor-server.sock"}"
+            ENV["ASCIIDOCTOR_SERVER_ADDRESS"] || "unix://#{Pathname.pwd / ".asciidoctor-server.sock"}"
           ).parse(args)
         end
 
         def parse(args)
-          positional_args = OptionParser.new do |parser|
-            parser.on("-addr ADDRESS", "--address ADDRESS")
+          OptionParser.new do |parser|
+            parser.banner = "Usage: asciidoctor-server [options]"
+            parser.on("-addr ADDRESS", "--address ADDRESS",
+              "Server address (default: unix socket, can be overridden with ASCIIDOCTOR_SERVER_ADDRESS env var)")
             parser.on("-t THREAD_POOL_SIZE", "--thread_pool_size", Integer, "thread pool size")
             parser.on("-h", "--help", "print help") do
               puts parser

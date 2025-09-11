@@ -1,3 +1,4 @@
+use std::env;
 use url::Url;
 
 #[derive(argh::FromArgs, Debug)]
@@ -17,7 +18,11 @@ pub struct Args {
     #[argh(switch, short = 's')]
     pub no_header_footer: bool,
 
-    /// server address
+    /// server address (defaults to unix socket in current directory)
+    /// Can be overridden with the environment variable ASCIIDOCTOR_SERVER_ADDRESS.
+    /// Examples:
+    ///   - unix:/path/to/socket
+    ///   - tcp://localhost:50051
     #[argh(option, long = "address", default = "default_server_address()")]
     pub server_address: url::Url,
 
@@ -31,15 +36,20 @@ pub struct Args {
 }
 
 fn default_server_address() -> Url {
-    Url::parse(
-        format!(
-            "unix:{}",
-            std::env::current_dir()
-                .unwrap()
-                .join(".asciidoctor-server.sock")
-                .display()
-        )
-        .as_str(),
-    )
-    .unwrap()
+    env::var("ASCIIDOCTOR_SERVER_ADDRESS")
+        .ok()
+        .and_then(|addr| Url::parse(&addr).ok())
+        .unwrap_or_else(|| {
+            Url::parse(
+                format!(
+                    "unix:{}",
+                    env::current_dir()
+                        .unwrap()
+                        .join(".asciidoctor-server.sock")
+                        .display()
+                )
+                .as_str(),
+            )
+            .unwrap()
+        })
 }
